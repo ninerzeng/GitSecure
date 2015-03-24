@@ -46,6 +46,8 @@ def collect_repo_urls():
 	#print repoList[0]
 
 if __name__ == '__main__':
+	download_repo.make_folder('../data')
 	url_list = collect_repo_urls()
-	for url in url_list:
-		download_repo.download_url(url)
+	#for url in url_list:
+	download_repo.download_url(url_list[0])
+	print url_list[0].split('/')[-2]
