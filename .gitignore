@@ -1,0 +1,6 @@
+#ignore .out file
+*.out
+#ignore .pyc file
+*.pyc
+#ignore .swp file
+*.swp
