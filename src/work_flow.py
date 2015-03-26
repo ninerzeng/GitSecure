@@ -7,6 +7,7 @@ starting_date = date(2009,1,1)
 if __name__ == '__main__':
 	if not os.path.exists('../data'):
 		download_repo.make_folder('../data')
-	collect_repos.collect_repo_urls(starting_date)	
-
+	url_list = collect_repos.collect_repo_urls(starting_date)	
+	download_repo.download_url(url_list[0])
+	
 
