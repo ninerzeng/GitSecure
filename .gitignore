@@ -6,3 +6,5 @@
 *.swp
 #ignore files in data folder
 /data/*
+
+*.DS_store

@@ -5,19 +5,18 @@ from datetime import date
 import download_repo
 #today = date.today()
 #print today
-def collect_repo_urls():
+def collect_repo_urls(*args):
 	language = 'C'
 	size_limit = '1000'
-	starting_date = date(2009,1,1)
+	#starting_date = date(2009,1,1)
 	per_page = 100
 	page_num = 1
 	compress_format = 'tarball'
 
 	url_list = []
+	if len(args) >= 1:
+		starting_date = args[0]
 	print str(starting_date)
-
-
-
 	#&sort=created&order=asc
 	#query_url = 'https://api.github.com/search/repositories?q=language:C+size:<=1000&per_page=100&page=10';
 	query_url = ("https://api.github.com/search/repositories?"
