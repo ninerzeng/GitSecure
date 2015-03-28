@@ -17,9 +17,9 @@ if __name__ == '__main__':
 		download_repo.make_folder(data_dir)
 	url_list = collect_repos.collect_repo_urls(token, starting_date)	
 	print 'Downloading ' + str(len(url_list)) + ' tar files'
-	#download_repo.download_url(url_list[0], token)
+	download_repo.download_url(url_list[0], 0, token)
 	#Cautions!!
 	#The following code will download less than a thousand repos
-	download_repo.download_urls(url_list, token)
+	#download_repo.download_urls(url_list, token)
 	#untar.untar_dir(data_dir)
 

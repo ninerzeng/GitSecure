@@ -7,7 +7,7 @@ def untar(fname,destpath='../data'):
     if (fname.endswith("tar.gz")):
         tar = tarfile.open(fname)
         if destpath is not None:
-	        tar.extractall(destpath)
+	        tar.extractall(destpath+'/'+fname[:-6])
 	        print "Extracted in " + destpath
         else: 
         	tar.extractall();
