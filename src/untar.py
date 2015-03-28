@@ -3,7 +3,7 @@ from os import listdir
 from os.path import isfile, join
  
 # untars single file and drops it in destpath
-def untar(fname,destpath=None):
+def untar(fname,destpath='../data'):
     if (fname.endswith("tar.gz")):
         tar = tarfile.open(fname)
         if destpath is not None:
@@ -11,7 +11,7 @@ def untar(fname,destpath=None):
 	        print "Extracted in " + destpath
         else: 
         	tar.extractall();
-	        print "Extracted in Current Directory"
+	        print "Extracted in Data Directory"
         tar.close()
     else:
         print "Not a tar.gz file: '%s '" % fname
@@ -28,6 +28,7 @@ def generate_tar_list(mypath):
 def untar_dir(mypath, destpath=None ):
 	tar_list = generate_tar_list(mypath)
 	for t in tar_list:
+		print mypath + "/" + t
 		if destpath is None:
 			untar(mypath + "/" + t);
 		else:
