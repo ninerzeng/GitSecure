@@ -6,4 +6,7 @@ def make_folder(folder_name):
 def make_file(file_name):
 	print 'Creating file ' + file_name + '...'
 	call(["touch", file_name])
-	call('echo "result_dict={}" >> ' + file_name, shell=True)  
+	#echo_line = 'echo "\\\"result_dict\\\": {}" >> ' + file_name
+	echo_line = 'echo "{}" >> ' + file_name
+	print echo_line
+	call(echo_line, shell=True)  
