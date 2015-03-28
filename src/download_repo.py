@@ -3,7 +3,7 @@ import pycurl
 import StringIO
 import json
 
-def download_url(url, file_num='', token='none'): 
+def download_url(url, file_num='', token=None): 
 	file_name = '../data/' + url.split('/')[-2] + '_' + str(file_num)  + '.tar.gz'
 	print 'Downloading from ' + url + ' save as ' + file_name.split('/')[-1]
 	'''	
@@ -26,7 +26,8 @@ def download_url(url, file_num='', token='none'):
 	c.setopt(c.FOLLOWLOCATION, True)
 	c.setopt(c.HEADERFUNCTION, header.write)
 	#Authorizaiton token
-	c.setopt(pycurl.HTTPHEADER, ['Authorization: token ' + str(token)])
+	if token:
+		c.setopt(pycurl.HTTPHEADER, ['Authorization: token ' + str(token)])
 	c.setopt(pycurl.SSL_VERIFYPEER, True)
 	c.setopt(pycurl.SSL_VERIFYHOST, 2)
 	c.perform()

@@ -36,7 +36,10 @@ def collect_urls_by_page_num(*args):
 
 	url_list = []	
 	print query_url
-	r = requests.get(query_url, headers=header)
+	if not token:
+		r = requests.get(query_url)
+	else:
+		r = requests.get(query_url, headers=header)
 	#print r.headers
 	if(r.ok):
 		#TODO:time to sleep
