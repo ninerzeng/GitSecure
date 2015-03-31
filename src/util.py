@@ -27,3 +27,20 @@ def delete_files_with_extension(ext, path=None):
 def delete_tarballs(dirpath=None):	
 	delete_files_with_extension("tar.gz", dirpath)
 
+def find_extensions(ext, path = None):
+	print "Listing files with extension " + ext
+	victim = ""
+	if path is not None:
+		victim = path + "/*." + ext
+	matches = []
+	for root, dirnames, filenames in os.walk(path):
+		for filename in filenames:
+			'''
+			print root
+			print filename
+			print dirnames
+			'''
+			if filename.endswith(ext):
+				path_file = os.path.join(root, filename)
+				matches.append(path_file[len(path)+1:])
+	return matches
