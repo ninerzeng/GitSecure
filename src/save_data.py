@@ -4,9 +4,11 @@ import MySQLdb as mdb
 import sys
 import csv
 con = None
+cred_file = 'mysqlcreds.csv'
 
-def get_connection():            
-	with open('mysqlcreds.csv', 'rb') as inputfile:
+def get_connection(credentials_file='mysqlcreds.csv'):     
+    cred_file = credentials_file
+	with open(credentials_file, 'rb') as inputfile:
 		inputreader = csv.DictReader(inputfile, delimiter=',')
 		row = next(inputreader);
 		try:
@@ -16,8 +18,6 @@ def get_connection():
 			if con:    
 				con.close()            
 			sys.exit(1)
-
-get_connection();			
             
 def save_user_data(username, email=''):
     return execute_query("insert into gh_user (username, email) values (%s, %s)", (username, email));
@@ -37,7 +37,7 @@ def save_vulnerability_data(file_id, line_number, code_sample, date_written='', 
 
 def execute_query(query, data):  
     if not con:
-        get_connection();
+        get_connection(cred_file);
 		# if this fails it should exit
     cursor = con.cursor();
     print "about to execute query"
