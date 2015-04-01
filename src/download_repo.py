@@ -37,11 +37,14 @@ def download_url(url, file_num='', token=None):
 	c.close()
 
 def download_urls(url_list, token=None):
-	file_num = 1
+	repo_to_user = {}
+	file_num = 1	
 	for url in url_list:
 		print 'File ' + str(file_num)
 		download_url(url, file_num, token)
+		repo_to_user[url.split('/')[-2] + '_' + str(file_num)] = url.split('/')[-3]
 		file_num += 1
+	return repo_to_user
 	
 def make_folder(folder_name):
 	print 'Creating folder ' + folder_name + '...'
