@@ -1,21 +1,19 @@
 create table gh_user (
 	username varchar(256),
 	email varchar(256),
-	user_id int not null auto_increment, 
-	primary key (user_id),
-	unique key (username)
+	primary key (username)
 );
 
 create table gh_repo (
 	repo_name varchar(256),
 	date_created datetime,
-	owner_id int,
+	owner_name varchar(256),
 	repo_size int,
 	date_collected datetime,
 	repo_id int not null auto_increment, 
 	primary key (repo_id),
-	foreign key (owner_id) references gh_user(user_id),
-	unique key (repo_name, owner_id)
+	foreign key (owner_name) references gh_user(username),
+	unique key (repo_name, owner_name)
 );
 
 create table gh_file (
