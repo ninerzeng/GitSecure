@@ -8,7 +8,18 @@ def removeComments(string):
 
 def removeCommentsAndStrings(string):
 	#print string
-	string = re.sub(re.compile("(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)", re.MULTILINE|re.DOTALL), "", string)
+	pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
+	regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+	def _replacer(match):
+		if match.group(2) is not None:
+			return ""
+		else:
+			#return ""
+			return match.group(1)
+
+	#string = re.sub(re.compile("(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)", re.MULTILINE|re.DOTALL), "", string)
+	#return string
+	string = regex.sub(_replacer, string)
 	return string
 
 def search_for_function_uses(string, func_list): 
@@ -17,9 +28,11 @@ def search_for_function_uses(string, func_list):
 		result = search_for_function_use(string, func)
 		#print result
 		if result:
+			#print result
 			match_list = {func: []}
 			for tuple in result:
 				match_list[func].append(tuple)
+				#print tuple
 			
 			f_list.append(match_list)
 			#f_list.append({func: result.group(0)})
@@ -27,5 +40,5 @@ def search_for_function_uses(string, func_list):
 	return f_list		
 
 def search_for_function_use(string, func):
-	return re.findall(re.compile(".*\s" + func + "\s*\(.*\).*"), string)
+	return re.findall(re.compile(".*\\b" + func + "\s*\(.*\).*"), string)
 		

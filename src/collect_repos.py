@@ -51,6 +51,7 @@ def collect_urls_by_page_num(*args):
 		total_count = repoItem['total_count']
 		repoList = repoItem['items']
 		#print len(repoItem)
+		#Print it to see everything you mioght need from repo query, ask nina for pretty print
 		#print repoItem
 		#print len(repoItem['items'])
 		for item in repoList:

@@ -5,6 +5,7 @@ import json
 import download_repo
 import collect_repos
 import check_file_vuls
+import analyze_json
 from datetime import date
 
 data_dir = '../data'
@@ -13,7 +14,10 @@ result_file = 'result.json'
 token = os.environ.get('P_TOKEN', None)
 
 #List of vulnerable functions to check
-vulnerabilities = ['gets', 'getpw', 'printf', 'fprintf', 'sprintf', 'snprintf', 'vsprintf', 'strcpy', 'strcat', 'scanf', 'rand', 'vfork']
+vulnerabilities = ['strcpy', 'strcat', 'sprintf', 'vsprintf', 'gets', 'getpw']
+
+good_practices = ['strncpy', 'strncat', 'snprintf', 'vsnprintf', 'fgets', 'getpwuid']
+
 #Get folders prior to Jan 1st, 2009
 starting_date = date(2009,1,1)
 if __name__ == '__main__':
@@ -33,7 +37,7 @@ if __name__ == '__main__':
 	url_list = collect_repos.collect_repo_urls(token, starting_date)	
 	#Write to result file
 	with open(result_file_dir) as result_data:
-		result_dict = json.load(result_data)
+		result_dict = json.load(result_data, encoding="latin-1")
 	
 	#Create an initial dictionary to collect statistic such as user and repo names
 	for url in url_list:
@@ -43,7 +47,7 @@ if __name__ == '__main__':
 		if not username in result_dict:
 			#result_dict[items[-3]] = [{items[-2]:[]}]
 			result_dict[username] = {reponame:[]}
-		else:
+		elif not reponame in result_dict[username]:
 			#result_dict[items[-3]].append({items[-2]:[]})  
 			result_dict[username][reponame] = [] 
 		
@@ -74,16 +78,19 @@ if __name__ == '__main__':
 	untar.untar_dir(data_dir)
 	util.delete_tarballs(data_dir)
 	all_c_files = util.find_extensions('.c', data_dir)
-	#print all_c_files
+	print 'Total number of C files: ' + str(len(all_c_files))
 
+	'''
 	#Check for files using the vulnerabilities list set up top 
-	results = check_file_vuls.scan_files_for_vul(data_dir, all_c_files, vulnerabilities)
+	results = check_file_vuls.scan_files_for_vul(data_dir, all_c_files, vulnerabilities + good_practices)
 	#print results
-
+	
 	#Update the initial result data with vulnerabilities of spefic files in each repo
 	for entry in results:
 		for key, val in entry.iteritems():
 			#print key
+			first_idx = key.find('/')
+			unique_path = key[first_idx+1:]
 			key = key.split('/')
 			reponame = key[0]
 			last_idx = reponame.rfind('_')
@@ -93,8 +100,15 @@ if __name__ == '__main__':
 			#print reponame_to_username[reponame]
 			username = reponame_to_username[reponame]
 			#print result_dict[username]
-			result_dict[username][reponame_no_underscore].append({filename: val})
+			result_dict[username][reponame_no_underscore].append({unique_path: val})
+	'''
 	#print result_dict
 	#saving the result
-	with open(result_file_dir, 'w') as outfile:	
-		json.dump(result_dict, outfile) 
+	#with open(result_file_dir,'w') as outfile:	
+	#	json.dump(result_dict, outfile, ensure_ascii=False) 
+	# analyze_json.collect_num_files_using_func(result_dict, 'gets')
+	total_list = vulnerabilities + good_practices
+	num_list = analyze_json.collect_num_files_using_func_list(result_dict, total_list)
+	print total_list
+	print num_list
+	
