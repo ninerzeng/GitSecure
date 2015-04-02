@@ -22,7 +22,7 @@ create table gh_file (
 	file_hash varchar(1000),
 	file_id int not null auto_increment, 
 	primary key (file_id),
-	foreign key (repo_id) references gh_repo(repo_id)
+	foreign key (repo_id) references gh_repo(repo_id),
 );
 
 create table gh_vuln (
