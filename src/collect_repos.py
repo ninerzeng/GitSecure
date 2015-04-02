@@ -8,6 +8,8 @@ import math
 #today = date.today()
 #print today
 
+import pprint
+
 language = 'C'
 size_limit = '1000'
 per_page = 100
@@ -51,11 +53,15 @@ def collect_urls_by_page_num(*args):
 		total_count = repoItem['total_count']
 		repoList = repoItem['items']
 		#print len(repoItem)
-		#print repoItem
+		#pprint.pprint(repoItem)
 		#print len(repoItem['items'])
 		for item in repoList:
+      #TODO: also want item['size'] and item['created_at']
+      #there's also a bunch of other interesting stuff, like collaborators_url, forks_count, description, watchers, which can give us an idea of how popular it is and what it's for
 			url = item['url'] + '/' + compress_format
-			url_list.append(url)
+			size = item['size']
+			created_at = item['created_at']
+			url_list.append({'url': url, 'size': size, 'created_at': created_at})
 	else:
 		print 'Request for Page Num: ' + str(page_num) + ' ERROR'
 		print r.headers	
