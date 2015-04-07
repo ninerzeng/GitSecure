@@ -50,7 +50,7 @@ if __name__ == '__main__':
 		file_num+=1;
 		#TODO: these steps are all going to be extra slow because they're designed to compute in batch and that's now what we're doing
 		untar.untar_dir(data_dir)
-		util.delete_tarballs(data_dir)
+#		util.delete_tarballs(data_dir)
 		all_c_files = util.find_extensions('.c', data_dir)
 		for c_file in all_c_files:
 			filename = c_file[c_file.find('/'):]
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 								#print func, " ", sentence
 								sd.save_vulnerability_data(db_conn, file_id, -1, sentence, func)
 
-
+		util.delete_in_directory(data_dir)
 
 
 
