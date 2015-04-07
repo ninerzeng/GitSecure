@@ -16,6 +16,6 @@ def test(credentials_file='mysqlcreds.csv'):
   file_id = sd.save_file_data(con, "test_file.c", repo_id, "");
 
   #optional date and author parameters
-  vuln_id = sd.save_vulnerability_data(con, file_id, 24, "code sample;");
+  vuln_id = sd.save_vulnerability_data(con, file_id, 24, "code sample;", "vulnerability description/regex");
   
   sd.close_connection(con);

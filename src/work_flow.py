@@ -40,27 +40,35 @@ if __name__ == '__main__':
 		username = items[-3]	
 		reponame = items[-2]
 		#TODO: insert user into database, hold onto username
-#		sd.save_user_data(db_conn, username);
-		print "user: " + username
+		sd.save_user_data(db_conn, username);
+		#print "user: " + username
 		#TODO: insert repo into database, save repo_id
-#		repo_id = sd.save_repo_data(db_conn, reponame, repo_created_at , username, repo_size, datetime.datetime.now());
-		print "repo: " + reponame
+		repo_id = sd.save_repo_data(db_conn, reponame, repo_created_at , username, repo_size, datetime.datetime.now());
+		#print "repo: " + reponame
 		download_repo.download_url(url, file_num, token)
+		print "Downloaded repo ", file_num
+		file_num+=1;
 		#TODO: these steps are all going to be extra slow because they're designed to compute in batch and that's now what we're doing
 		untar.untar_dir(data_dir)
 		util.delete_tarballs(data_dir)
 		all_c_files = util.find_extensions('.c', data_dir)
 		for c_file in all_c_files:
 			filename = c_file[c_file.find('/'):]
-			print "file: " + filename
+			#print "file: " + filename
 			#TODO: insert file into db, save file_id
-#			file_id = sd.save_file_data(db_conn, filename, repo_id, '')
+			file_id = sd.save_file_data(db_conn, filename, repo_id, '')
 			results = check_file_vuls.scan_files_for_vul(data_dir, {c_file}, vulnerabilities);
 			for entry in results:
 				for key, val in entry.iteritems():
-					print "vuln: ", val
-					#TODO: iterate through val and save each result
-					#TODO: for each result, insert into db
-					#sd.save_vulnerability_data(db_conn, file_id, -1, codesample)
+					#print "key ", key
+					#print "val ", val
+					for vuln_set in val:
+						for func, ar in vuln_set.iteritems():
+							for sentence in ar:
+								#print func, " ", sentence
+								sd.save_vulnerability_data(db_conn, file_id, -1, sentence, func)
+
+
+
 
 

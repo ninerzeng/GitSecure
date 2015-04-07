@@ -17,21 +17,25 @@ create table gh_repo (
 );
 
 create table gh_file (
-	filename varchar(1000),
+	filename varchar(500),
 	repo_id int,
-	file_hash varchar(1000),
+	file_hash varchar(500),
 	file_id int not null auto_increment, 
 	primary key (file_id),
 	foreign key (repo_id) references gh_repo(repo_id),
+	unique key (filename, repo_id)
 );
 
 create table gh_vuln (
 	vuln_id int not null auto_increment,
 	line_number int, -- should we have an optional end line number?
-	code_sample varchar(5000),
+	code_sample varchar(1000),
+	vuln_desc varchar (500),
 	file_id int,
 	date_written datetime, -- may not be able to get this field
 	author_name varchar(256), -- may not be able to get this field either
 	primary key (vuln_id),
 	foreign key (file_id) references gh_file(file_id)
-)
+);
+
+create index vuln_descript on gh_vuln (vuln_desc);
