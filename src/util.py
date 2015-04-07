@@ -1,6 +1,8 @@
 import os
 from subprocess import call
 from glob import glob
+import os, shutil
+
 def make_folder(folder_name):
 	print 'Creating folder ' + folder_name + '...'
 	call(["mkdir", folder_name])
@@ -44,3 +46,18 @@ def find_extensions(ext, path = None):
 				path_file = os.path.join(root, filename)
 				matches.append(path_file[len(path)+1:])
 	return matches
+
+
+
+# deletse all files/subfolder contents in a directory
+def delete_in_directory(folder):
+	# folder = '/path/to/folder'
+	for the_file in os.listdir(folder):
+	    file_path = os.path.join(folder, the_file)
+        try:
+		    if os.path.isfile(file_path):
+				os.unlink(file_path)
+            elif os.path.isdir(file_path): shutil.rmtree(file_path)
+	    except Exception, e:
+		    print e
+
