@@ -21,7 +21,7 @@ def download_url(url, file_num='', token=None):
 	header = StringIO.StringIO()
 	f = open(file_name,'w')
 	c = pycurl.Curl()
-	c.setopt(pycurl.URL,url)
+	c.setopt(pycurl.URL, str(url))
 	c.setopt(pycurl.WRITEDATA, f)
 	c.setopt(c.FOLLOWLOCATION, True)
 	c.setopt(c.HEADERFUNCTION, header.write)
