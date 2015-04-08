@@ -1,7 +1,7 @@
 import requests
 import json
 import time
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from time import gmtime, time
 import download_repo
 import math
@@ -14,27 +14,32 @@ per_page = 100
 compress_format = 'tarball'
 
 #args = starting_date, ending_date(optional), page_num 
-def collect_urls_by_page_num(*args):
-	if len(args) < 3:
+def collect_urls_by_page_num(token, page_num, starting_date=None, ending_date=None, counter_flag=False):
+	if not starting_date:
 		print 'Not enough args'
-	token = args[0]
-	starting_date = args[1]
-	if len(args) == 3:
-		page_num = args[2]
+	if not ending_date:
 		query_url = ("https://api.github.com/search/repositories?"
 			     "q=language:"+language +
 			     "+size:<=" + size_limit +
-			     "+created:<"+str(starting_date) +
+			     "+created:<="+str(starting_date) +
 			     "&per_page=" + str(per_page) +
 			     "&page=" + str(page_num)
 			    )
-	elif len(args) == 4:
-		ending_date = args[2]
-		page_num = args[3]
+	else:
 		#TODO
+		#Offset purpose
+		starting_date += timedelta(days=1)
+		query_url = ("https://api.github.com/search/repositories?"
+			     "q=language:"+language +
+			     "+size:<=" + size_limit +
+			     "+created:"+str(starting_date) + ".." + str(ending_date) +
+			     "&per_page=" + str(per_page) +
+			     "&page=" + str(page_num)
+			    )
 	header = {'Authorization': 'token ' + str(token)}	
 
-	url_list = []	
+	#url_list = []	
+	meta_list = []
 	print query_url
 	if not token:
 		r = requests.get(query_url)
@@ -50,42 +55,68 @@ def collect_urls_by_page_num(*args):
 		repoItem = json.loads(r.text or r.content)
 		total_count = repoItem['total_count']
 		repoList = repoItem['items']
+		if counter_flag:
+			return {'total_count': total_count, 'rate_limit': r.headers['x-ratelimit-remaining']}		
 		#print len(repoItem)
 		#Print it to see everything you mioght need from repo query, ask nina for pretty print
 		#print repoItem
 		#print len(repoItem['items'])
 		for item in repoList:
 			url = item['url'] + '/' + compress_format
-			url_list.append(url)
+			created_at = item['created_at']
+			pushed_at = item['pushed_at']
+			size = item['size']
+			contributors_url = item['contributors_url']
+			meta_list.append({
+					'url': url,
+					'created_at': created_at,
+					'pushed_at': pushed_at,
+					'size': size,
+					'contributors_url': contributors_url
+					})
 	else:
 		print 'Request for Page Num: ' + str(page_num) + ' ERROR'
 		print r.headers	
 		
-	return {'total_count': total_count,'url_list': url_list}
+	return {'total_count': total_count,'meta_list': meta_list}
 
 
-def collect_repo_urls(*args):
-	if len(args) >= 2:
-		token = args[0]
-		starting_date = args[1]
-		#print str(starting_date)
-		page_num = 1
-		result =  collect_urls_by_page_num(token, starting_date, 1)
-		total_count = result['total_count']
-		url_list = result['url_list']
-		#print total_count
-		num_page = int(math.ceil(total_count/float(per_page)))
-		#print type(num_page)	
-		#print num_page
-		page_num += 1
-		while page_num <= num_page:
-			#print page_num
-			result =  collect_urls_by_page_num(token, starting_date, page_num)
-			url_list += result['url_list']		
-			page_num += 1	
-		return url_list
-	else:
+def collect_repo_urls(token=None, starting_date=None, ending_date=None, counter_flag=False):
+	if not starting_date:
 		print 'Not enough arguments'
+		return
+	page_num = 1
+	if not ending_date:
+		#print str(starting_date)
+		result =  collect_urls_by_page_num(token, page_num, starting_date)
+	else:
+		#print str(starting_date)
+		if counter_flag:
+			return  collect_urls_by_page_num(token, page_num, starting_date, ending_date, counter_flag)
+		else:
+			result =  collect_urls_by_page_num(token, page_num, starting_date, ending_date)
+
+	total_count = result['total_count']
+	meta_list = result['meta_list']
+	#print total_count
+	num_page = int(math.ceil(total_count/float(per_page)))
+	num_page = min(num_page, 10)
+	#print type(num_page)	
+	#print num_page
+	page_num += 1
+
+	while page_num <= num_page:
+		#print page_num
+		if not ending_date:
+			result =  collect_urls_by_page_num(token, page_num, starting_date)
+		else:
+			result =  collect_urls_by_page_num(token, page_num, starting_date, ending_date)
+		meta_list += result['meta_list']		
+		page_num += 1	
+	return {
+		'meta_list': meta_list,
+		'total_count': int(total_count)
+		}
 	#&sort=created&order=asc
 	#query_url = 'https://api.github.com/search/repositories?q=language:C+size:<=1000&per_page=100&page=10';
 	#print repoList[0]
