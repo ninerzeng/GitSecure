@@ -9,11 +9,13 @@ import analyze_json
 from datetime import date, timedelta
 import math
 import time
+import import_json_to_db
 
 data_dir = '../data'
 result_dir = '../result'
 result_file = 'result.json'
 token = os.environ.get('P_TOKEN', None)
+credentials_file='mysqlcreds-local.csv'
 
 #List of vulnerable functions to check
 vulnerabilities = ['strcpy', 'strcat', 'sprintf', 'vsprintf', 'gets', 'getpw']
@@ -21,9 +23,10 @@ vulnerabilities = ['strcpy', 'strcat', 'sprintf', 'vsprintf', 'gets', 'getpw']
 good_practices = ['strncpy', 'strncat', 'snprintf', 'vsnprintf', 'fgets', 'getpwuid', 'strlcpy', 'strlcat']
 
 #Get folders prior to Jan 1st, 2009
-starting_date = date(2009,1,1)
-ending_date = date.today()
-#ending_date = date(2008,3,5)
+#starting_date = date(2009,1,1)
+starting_date = date(2008,3,1)
+#ending_date = date.today()
+ending_date = date(2008,3,5)
 initial_delta = timedelta(days=30)
 #initial_delta = timedelta(days=5)
 
@@ -196,6 +199,7 @@ if __name__ == '__main__':
 		
 		#print result_dict
 		#TODO delete all files after security analysis
+		import_json_to_db.import_to_database(result_dict, credentials_file)
 
 		#saving the result
 		result_with_date = {'start' : str(cs), 'end': str(ce), 'result': result_dict}
