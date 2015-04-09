@@ -16,6 +16,14 @@ create table gh_repo (
 	unique key (repo_name, owner_name)
 );
 
+create table gh_repo_contributors (
+  repo_id int,
+  username varchar(256),
+  foreign key (repo_id) references gh_repo(repo_id),
+  foreign key (username) references gh_user(username),
+  unique key(repo_id, username)
+);
+
 create table gh_file (
 	filename varchar(500),
 	repo_id int,
@@ -29,7 +37,7 @@ create table gh_file (
 create table gh_vuln (
 	vuln_id int not null auto_increment,
 	line_number int, -- should we have an optional end line number?
-	code_sample varchar(1000),
+	code_sample varchar(2000),
 	vuln_desc varchar (500),
 	file_id int,
 	date_written datetime, -- may not be able to get this field

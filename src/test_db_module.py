@@ -4,7 +4,7 @@ import datetime
 from imp import reload
 reload(sd)
 
-def test(credentials_file='mysqlcreds.csv'):
+def test(credentials_file='mysqlcreds-throwaway.csv'):
   con = sd.get_connection(credentials_file);
   username = "test_user"
   sd.save_user_data(con, username, "fake@email.com");
@@ -12,6 +12,8 @@ def test(credentials_file='mysqlcreds.csv'):
   #repo_id = save_repo_data("test_repo", date_created, user_id, repo_size, date_collected);
   #fill in with appropriate data types
   repo_id = sd.save_repo_data(con, "test_repo", datetime.date.today(), username, 2400, datetime.date.today());
+
+  sd.save_repo_contributor_data(con, username, repo_id);
 
   file_id = sd.save_file_data(con, "test_file.c", repo_id, "");
 
