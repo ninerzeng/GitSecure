@@ -1,6 +1,18 @@
 import os
 from subprocess import call
 from glob import glob
+import time as sleeptime
+from time import time
+import math
+import shutil
+
+def nap(wakeup_time):
+	current_time = time()
+	nap_time = math.ceil(wakeup_time - current_time)
+	if  nap_time > 0:
+		print 'napping for ', nap_time, ' seconds'
+		sleeptime.sleep(nap_time)
+
 def make_folder(folder_name):
 	print 'Creating folder ' + folder_name + '...'
 	call(["mkdir", folder_name])

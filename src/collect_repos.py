@@ -40,7 +40,8 @@ def collect_urls_by_page_num(token, page_num, starting_date=None, ending_date=No
 
 	#url_list = []	
 	meta_list = []
-	print query_url
+	if counter_flag:
+		print query_url
 	if not token:
 		r = requests.get(query_url)
 	else:
@@ -48,8 +49,8 @@ def collect_urls_by_page_num(token, page_num, starting_date=None, ending_date=No
 	#print r.headers
 	if(r.ok):
 		#TODO:time to sleep
-		print 'Request for Page Num: ' + str(page_num) + ' returns OK'	
-		print 'Remaining request: ' + r.headers['x-ratelimit-remaining'] 
+		#print 'Request for Page Num: ' + str(page_num) + ' returns OK'	
+		#print 'Remaining request: ' + r.headers['x-ratelimit-remaining'] 
 		#print ' date: ' + r.headers['date'] + ' reset: ' + datetime.utcfromtimestamp(int(r.headers['x-ratelimit-reset'])).isoformat() 
 		#print str(r.headers['x-ratelimit-reset']) + ' ' + str(time())
 		repoItem = json.loads(r.text or r.content)

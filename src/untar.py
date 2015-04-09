@@ -8,10 +8,10 @@ def untar(fname,destpath='../data'):
         tar = tarfile.open(fname)
         if destpath is not None:
 	        tar.extractall(destpath+'/'+fname[:-7])
-	        print "Extracted in " + destpath
+	        #print "Extracted in " + destpath
         else: 
         	tar.extractall();
-	        print "Extracted in Data Directory"
+	        #print "Extracted in Data Directory"
         tar.close()
     else:
         print "Not a tar.gz file: '%s '" % fname
@@ -20,7 +20,7 @@ def untar(fname,destpath='../data'):
 def generate_tar_list(mypath):
 	onlyfiles = [ f for f in listdir(mypath) if isfile(join(mypath,f)) 
 					and f.endswith("tar.gz")]
-	print onlyfiles;
+	#print onlyfiles;
 	return onlyfiles;
 
 # careful using this when internal directories are the same 
@@ -28,7 +28,7 @@ def generate_tar_list(mypath):
 def untar_dir(mypath, destpath=None ):
 	tar_list = generate_tar_list(mypath)
 	for t in tar_list:
-		print mypath + "/" + t
+		#print mypath + "/" + t
 		if destpath is None:
 			untar(mypath + "/" + t);
 		else:
