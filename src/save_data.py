@@ -19,13 +19,15 @@ def get_connection(credentials_file='mysqlcreds.csv'):
 def save_user_data(con, username, email=''):
     # if we encounter a user a second time, use insert ignore syntax to avoid inserting them a second time
     return execute_query(con, "insert ignore into gh_user (username, email) values (%s, %s)", (username, email));
-    #return user_id
     
-def save_repo_data(con, repo_name, date_created, owner_name, repo_size, last_pushed):
-    repo_id = execute_query(con, "insert ignore into gh_repo (repo_name, date_created, owner_name, repo_size, last_pushed) values (%s, %s, %s, %s, %s)", (repo_name, date_created, owner_name, repo_size, last_pushed));
+def save_repo_data(con, repo_name, date_created, owner_name, repo_size, last_pushed, contributors_url=""):
+    repo_id = execute_query(con, "insert ignore into gh_repo (repo_name, date_created, owner_name, repo_size, last_pushed, contributors_url) values (%s, %s, %s, %s, %s, %s)", (repo_name, date_created, owner_name, repo_size, last_pushed, contributors_url));
     if (repo_id == -1):
       repo_id = select_id_query(con, "select repo_id from gh_repo where repo_name = %s and owner_name = %s", (repo_name, owner_name));
     return repo_id
+
+def save_repo_contributor_data(con, username, repo_id):
+    return execute_query(con, "insert ignore into gh_repo_contributors (username, repo_id) values (%s, %s)", (username, repo_id));
 
 def save_file_data(con, filename, repo_id, file_hash):
     file_id = execute_query(con, "insert ignore into gh_file (filename, repo_id, file_hash) values (%s, %s, %s)", (filename, repo_id, file_hash));
@@ -82,6 +84,23 @@ def select_id_query(con, query, data):
     #print 'Row id = ' + str(row_id);
     cursor.close();
     return row_id;
+
+def select_many_query(con, query, data=None):  
+    if not con:
+      print "Error: no database connection"
+      sys.exit(1)
+    cursor = con.cursor();
+    try: 
+        cursor.execute(query, data);
+    except mdb.Error, e: 
+        print "Error %d: %s" % (e.args[0],e.args[1])
+        if con:    
+            con.close()            
+        sys.exit(1)
+    print cursor._last_executed 
+    rows = cursor.fetchall();
+    cursor.close();
+    return rows;
 
 def close_connection(con):
     con.close();
