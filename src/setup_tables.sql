@@ -20,6 +20,7 @@ create table gh_repo (
 create table gh_repo_contributors (
   repo_id int,
   username varchar(256),
+  contributions int,
   foreign key (repo_id) references gh_repo(repo_id),
   foreign key (username) references gh_user(username),
   unique key(repo_id, username)

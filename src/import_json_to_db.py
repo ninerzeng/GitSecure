@@ -18,6 +18,7 @@ def import_to_database (json_dict, credentials_file):
 			#print repo_size
 			#print last_pushed
 			repo_id = sd.save_repo_data(db_conn, reponame, date_created, username, repo_size, last_pushed, contributors_url);
+
 			file_list = repo_dict["files"];
 			#print file_list
 			for file_info in file_list:

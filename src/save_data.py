@@ -26,8 +26,8 @@ def save_repo_data(con, repo_name, date_created, owner_name, repo_size, last_pus
       repo_id = select_id_query(con, "select repo_id from gh_repo where repo_name = %s and owner_name = %s", (repo_name, owner_name));
     return repo_id
 
-def save_repo_contributor_data(con, username, repo_id):
-    return execute_query(con, "insert ignore into gh_repo_contributors (username, repo_id) values (%s, %s)", (username, repo_id));
+def save_repo_contributor_data(con, username, repo_id, contributions):
+    return execute_query(con, "insert ignore into gh_repo_contributors (username, repo_id, contributions) values (%s, %s, %s)", (username, repo_id, contributions));
 
 def save_file_data(con, filename, repo_id, file_hash):
     file_id = execute_query(con, "insert ignore into gh_file (filename, repo_id, file_hash) values (%s, %s, %s)", (filename, repo_id, file_hash));
@@ -97,7 +97,7 @@ def select_many_query(con, query, data=None):
         if con:    
             con.close()            
         sys.exit(1)
-    print cursor._last_executed 
+    #print cursor._last_executed 
     rows = cursor.fetchall();
     cursor.close();
     return rows;
