@@ -3,9 +3,9 @@ import save_data as sd
 from imp import reload
 reload(sd)
 
-def import_to_database (json_dict):
+def import_to_database (json_dict, credentials_file):
 #	number_of_files = 0	
-	db_conn = sd.get_connection(credentials_file='mysqlcreds-throwaway.csv');
+	db_conn = sd.get_connection(credentials_file);
 	for username, repo in json_dict.iteritems():
 		sd.save_user_data(db_conn, username);
 		#print username

@@ -7,5 +7,6 @@
 #ignore files in data folder
 /data/*
 /result/*
-
+#ignore csv file
+*.csv
 *.DS_store

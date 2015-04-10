@@ -15,7 +15,7 @@ data_dir = '../data'
 result_dir = '../result'
 result_file = 'result.json'
 token = os.environ.get('P_TOKEN', None)
-credentials_file='mysqlcreds-local.csv'
+credentials_file='mysqlcreds-remote.csv'
 
 #List of vulnerable functions to check
 vulnerabilities = ['strcpy', 'strcat', 'sprintf', 'vsprintf', 'gets', 'getpw']
@@ -24,9 +24,9 @@ good_practices = ['strncpy', 'strncat', 'snprintf', 'vsnprintf', 'fgets', 'getpw
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2009,1,1)
-starting_date = date(2008,3,1)
-#ending_date = date.today()
-ending_date = date(2008,3,5)
+starting_date = date(2009,1,1)
+ending_date = date.today()
+#ending_date = date(2008,3,5)
 initial_delta = timedelta(days=30)
 #initial_delta = timedelta(days=5)
 
@@ -54,11 +54,11 @@ if __name__ == '__main__':
 	ps = None
 	pe = None
 	#Use this set to download prior as well
-	cs = None
-	ce = starting_date
+	#cs = None
+	#ce = starting_date
 	#User this set to download inclusive
-	#cs = starting_date
-	#ce = cs + initial_delta
+	cs = starting_date
+	ce = cs + initial_delta
 	print 'Starting date is ', starting_date, ' and ending date is ', ending_date
 
 	while (not pe or pe < ending_date):		

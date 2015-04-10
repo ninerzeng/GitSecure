@@ -5,10 +5,11 @@ from os.path import isfile, join
 # untars single file and drops it in destpath
 def untar(fname,destpath='../data'):
     if (fname.endswith("tar.gz")):
+ 	#print 'untaring ', fname
         tar = tarfile.open(fname)
         if destpath is not None:
-	        tar.extractall(destpath+'/'+fname[:-7])
 	        #print "Extracted in " + destpath
+	        tar.extractall(destpath+'/'+fname[:-7])
         else: 
         	tar.extractall();
 	        #print "Extracted in Data Directory"

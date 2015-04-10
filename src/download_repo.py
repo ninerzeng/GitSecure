@@ -3,6 +3,7 @@ import pycurl
 import StringIO
 import json
 import util
+import os
 
 def download_url(url, file_num='', token=None): 
 	file_name = '../data/' + url.split('/')[-2] + '_' + str(file_num)  + '.tar.gz'
@@ -65,6 +66,7 @@ def download_url(url, file_num='', token=None):
 	status = int(c.getinfo(c.RESPONSE_CODE))	
 	if status != 200:
 		print ('Status: %d' % status)
+		os.remove(file_name)
 	#print header.getvalue()
 	#print headers
 	c.close()
