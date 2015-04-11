@@ -67,11 +67,19 @@ def get_analysis(output_filename, vuln_list, alt_list):
 #repos contributed to per user
 #select username, count(distinct repo_id) from gh_repo_contributors group by username order by count(distinct repo_id);
 
+# get number of users who have each number of different repos they contribute to
+select count(distinct username), repo_contribs from ( select username, count(distinct repo_id) repo_contribs from gh_repo_contributors group by username order by count(distinct repo_id) ) group by repo_contribs
+
 #contributors per repo
 #select repo_id, count(distinct username) from gh_repo_contributors group by repo_id order by count(distinct username);
 
+# get number of repos with each number of different contributors
+select count(distinct repo_id), num_contribs from ( select repo_id, count(distinct username) from gh_repo_contributors group by repo_id order by count(distinct username) ) group by num_contribs
 
   #also correlation between repo size and vuln types/frequency
   #trends over time? not sure how to measure. maybe time last pushed
   #also correlation between number of contributors and vulnerability content
+
+
+#okay, other analysis we'd like to do:
 
