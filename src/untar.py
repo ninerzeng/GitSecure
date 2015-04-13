@@ -12,7 +12,7 @@ def untar(fname,destpath='../data'):
 		try:
 	        	tar.extractall(destpath+'/'+fname[:-7])
 		except Exception, e:
-			continue 
+			print e
         else: 
         	tar.extractall();
 	        #print "Extracted in Data Directory"
