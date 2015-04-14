@@ -40,5 +40,5 @@ def search_for_function_uses(string, func_list):
 	return f_list		
 
 def search_for_function_use(string, func):
-	return re.findall(re.compile(".*\\b" + func + "\s*\(.*\).*"), string)
+	return re.findall(re.compile(".*\\b" + func + "\s*\(.*?\).*"), string)
 		
