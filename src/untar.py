@@ -9,7 +9,10 @@ def untar(fname,destpath='../data'):
         tar = tarfile.open(fname)
         if destpath is not None:
 	        #print "Extracted in " + destpath
-	        tar.extractall(destpath+'/'+fname[:-7])
+		try:
+	        	tar.extractall(destpath+'/'+fname[:-7])
+		except Exception, e:
+			print e
         else: 
         	tar.extractall();
 	        #print "Extracted in Data Directory"
