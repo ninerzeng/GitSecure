@@ -54,7 +54,6 @@ def execute_query(con, query, data):
         if con:    
             con.close()            
         sys.exit(1)
- 
     lastrow = cursor.lastrowid;
     #print 'Last row id = ' + str(lastrow);
     if not cursor.lastrowid:

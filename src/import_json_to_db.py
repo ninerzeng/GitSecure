@@ -6,6 +6,9 @@ reload(sd)
 def import_to_database (json_dict, credentials_file):
 #	number_of_files = 0	
 	db_conn = sd.get_connection(credentials_file);
+	start = json_dict["start"]
+	end = json_dict["end"]
+	json_dict = json_dict["result"]
 	for username, repo in json_dict.iteritems():
 		sd.save_user_data(db_conn, username);
 		#print username
