@@ -5,6 +5,7 @@ import util
 import sys
 
 in_order = False;
+token = os.environ.get('P_TOKEN', None)
 
 #db_conn = sd.get_connection(credentials_file='mysqlcreds-remote.csv')
 db_conn = sd.get_connection(credentials_file='mysqlcreds-analysis.csv')
@@ -14,7 +15,7 @@ if (in_order):
 else: #get the stragglers
 	rows = sd.select_many_query(db_conn, "select repo_id, contributors_url, owner_name from gh_repo where repo_id not in (select repo_id from gh_repo_contributors) order by repo_id")
 
-header = {'Authorization': 'token ' + '3c763f8f4d84e5a1329b19ad3238f06f038749de'}
+header = {'Authorization': 'token ' + token}
 
 for row in rows:
 	repo_id = row[0];
