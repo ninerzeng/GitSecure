@@ -1,6 +1,6 @@
 import save_data as sd
 import csv
-#from imp import reload
+from imp import reload
 reload(sd)
 import matplotlib.pyplot as plt
 import datetime
@@ -18,8 +18,9 @@ def get_analysis(output_filename, vuln_list, alt_list):
   writer = csv.DictWriter(outfile, fieldnames=fieldnames);
   writer.writeheader();
 
-  db_conn = sd.get_connection("mysqlcreds-analysis.csv");
-  for vuln in vuln_list:
+  total_list = vuln_list + alt_list
+  db_conn = sd.get_connection("mysqlcreds-local-analysis.csv");
+  for vuln in total_list:# vuln_list + alt_list:
     tmp_result = {"vulnerability": vuln};
     for i in range(0, len(id_types)):
 #get number of distinct {repo, file, vuln} containing a particular vulnerability
@@ -30,15 +31,15 @@ def get_analysis(output_filename, vuln_list, alt_list):
    gh_repo r  \
    inner join gh_file f on f.repo_id = r.repo_id  \
    inner join gh_vuln v on f.file_id = v.file_id  \
-   where vuln_desc = %s", [vuln]);
+   where vuln_desc = %s ", \
+   [vuln]);
       for row in rows:
         tmp_result[id_names[i]] = row[0];
-        #writer.writerow([ id_names[i], vuln, row[0] ]);
     writer.writerow(tmp_result)
 
   #Next, we'll want to look into co-occurrence of different types of vulnerabilities
-  for i in range(0, len(vuln_list)):
-    for j in range(i+1, len(vuln_list)):
+  for i in range(0, len(total_list)):
+    for j in range(i+1, len(total_list)):
       rows = sd.select_many_query(db_conn, \
 "  select count(distinct r.repo_id) \
   from gh_repo r \
@@ -47,24 +48,73 @@ def get_analysis(output_filename, vuln_list, alt_list):
   inner join gh_file f2 on r.repo_id = f2.repo_id \
   inner join gh_vuln v2 on f2.file_id = v2.file_id \
   and v1.vuln_desc = %s \
-  and v2.vuln_desc = %s ", [vuln_list[i], vuln_list[j]]);
+  and v2.vuln_desc = %s ", [total_list[i], total_list[j]]);
       for row in rows:
-        print vuln_list[i], ", ", vuln_list[j], ", ", row[0], ", repos,", datetime.datetime.now()
+        print total_list[i], ", ", total_list[j], ", ", row[0]
 
   #Also co-occurrence of unsafe and safe versions of functions
-  for i in range(0, len(vuln_list)):
-    for j in range(0, len(alt_list)):
-      rows = sd.select_many_query(db_conn, \
-"  select count(distinct r.repo_id) \
-  from gh_repo r \
-  inner join gh_file f1 on r.repo_id = f1.repo_id \
-  inner join gh_vuln v1 on f1.file_id = v1.file_id \
-  inner join gh_file f2 on r.repo_id = f2.repo_id \
-  inner join gh_vuln v2 on f2.file_id = v2.file_id \
-  and v1.vuln_desc = %s \
-  and v2.vuln_desc = %s ", [vuln_list[i], alt_list[j]]);
-      for row in rows:
-        print vuln_list[i], ", ", alt_list[j], ", ", row[0], ", repos,", datetime.datetime.now()
+#  for i in range(0, len(vuln_list)):
+#    for j in range(0, len(alt_list)):
+#      rows = sd.select_many_query(db_conn, \
+#"  select count(distinct r.repo_id) \
+#  from gh_repo r \
+#  inner join gh_file f1 on r.repo_id = f1.repo_id \
+#  inner join gh_vuln v1 on f1.file_id = v1.file_id \
+#  inner join gh_file f2 on r.repo_id = f2.repo_id \
+#  inner join gh_vuln v2 on f2.file_id = v2.file_id \
+#  and v1.vuln_desc = %s \
+#  and v2.vuln_desc = %s ", [vuln_list[i], alt_list[j]]);
+#      for row in rows:
+#        print vuln_list[i], ", ", alt_list[j], ", ", row[0]
+
+def get_analysis_threshold_prepopulated():
+  #get_analysis_threshold([('strcpy', 'strncpy'), ('strcpy', 'strlcpy'), ('strcat', 'strncat'), ('strcat', 'strlcat'), ('sprintf', 'snprintf'), ('vsprintf', 'vsnprintf'), ('gets', 'fgets') 'getpw'], ['strncpy', 'strncat', 'strlcpy', 'strlcat', 'snprintf', 'vsnprintf', 'fgets', 'getpwuid'], [" <=10", ">10"]);
+  get_analysis_threshold(['strcpy', 'strcat', 'sprintf', 'vsprintf', 'gets', 'getpw'], ['strncpy', 'strncat', 'strlcpy', 'strlcat', 'snprintf', 'vsnprintf', 'fgets', 'getpwuid'], [" <= 1", "> 1"]);
+
+def get_analysis_threshold(vuln_list, alt_list, threshconds):
+  db_conn = sd.get_connection("mysqlcreds-local-analysis.csv");
+#  for vuln in vuln_list + alt_list:
+#    tmp_result = {"vulnerability": vuln};
+#    for thresh in threshconds:
+#      rows = sd.select_many_query(db_conn, \
+#" select count(distinct " + "repo_id" + ")  \
+# from \
+#   (select r.repo_id \
+#   from gh_repo r  \
+#   inner join gh_file f on f.repo_id = r.repo_id  \
+#   inner join gh_vuln v on f.file_id = v.file_id  \
+#   inner join gh_repo_contributors rc on r.repo_id = rc.repo_id \
+#   where vuln_desc = %s \
+#   group by r.repo_id \
+#   having count(distinct rc.username) " + thresh + \
+#   ") a", \
+#   [vuln]);
+#      for row in rows:
+#        print vuln, row[0], thresh
+
+  #Next, we'll want to look into co-occurrence of different types of vulnerabilities
+  total_list = vuln_list + alt_list;
+  for i in range(0, len(total_list)):
+    for j in range(i+1, len(total_list)):
+      for thresh in threshconds:
+        rows = sd.select_many_query(db_conn, \
+  "  select count(distinct repo_id) \
+    from \
+    (select distinct rc.repo_id from \
+    gh_repo r \
+    inner join gh_file f1 on r.repo_id = f1.repo_id \
+    inner join gh_vuln v1 on f1.file_id = v1.file_id \
+    inner join gh_file f2 on r.repo_id = f2.repo_id \
+    inner join gh_vuln v2 on f2.file_id = v2.file_id \
+    inner join gh_repo_contributors rc on r.repo_id = rc.repo_id \
+    and v1.vuln_desc = %s \
+    and v2.vuln_desc = %s \
+    group by rc.repo_id \
+    having count(distinct rc.username) " + thresh +\
+    ") a", \
+    [total_list[i], total_list[j]]);
+        for row in rows:
+          print total_list[i], ", ", total_list[j], ", ", row[0], ", ", thresh
 
 #repos contributed to per user
 #select username, count(distinct repo_id) from gh_repo_contributors group by username order by count(distinct repo_id);
@@ -73,31 +123,13 @@ def get_graphs_prepopulated():
   get_graphs(['strcpy', 'strcat', 'sprintf', 'vsprintf', 'gets', 'getpw'], ['strncpy', 'strncat', 'strlcpy', 'strlcat', 'snprintf', 'vsnprintf', 'fgets', 'getpwuid']);
 
 def get_graphs(vuln_list, alt_list):
-#  plt.plot(stuff)
-#  plt.show()
-# get number of users who have each number of different repos they contribute to
-  db_conn = sd.get_connection("mysqlcreds-analysis.csv");
+  db_conn = sd.get_connection("mysqlcreds-local-analysis.csv");
   #b(db_conn, vuln_list)
   #for vuln in vuln_list:
     #b(db_conn, [vuln])
   c1(db_conn, ["strcpy"], ["strncpy"])
   c1(db_conn, ["strcpy"], ["strlcpy"])
   
-  rows = sd.select_many_query(db_conn, \
-"select count(distinct username), repo_contribs from ( select username, count(distinct repo_id) repo_contribs from gh_repo_contributors group by username order by count(distinct repo_id) ) a group by repo_contribs");
-  users = []
-  repos_contributed_to = []
-  for i in range(0, len(rows)):
-    users.append(rows[i][0])
-    repos_contributed_to.append(rows[i][1])
-#  plt.plot(repos_contributed_to, users)
-#  plt.show()
-#contributors per repo
-#select repo_id, count(distinct username) from gh_repo_contributors group by repo_id order by count(distinct username);
-
-# get number of repos with each number of different contributors
-  rows = sd.select_many_query(db_conn, \
-"select count(distinct repo_id), num_contribs from ( select repo_id, count(distinct username) num_contribs from gh_repo_contributors group by repo_id order by count(distinct username) ) a group by num_contribs")
 
   #also correlation between repo size and vuln types/frequency
   #trends over time? not sure how to measure. maybe time last pushed
@@ -142,8 +174,57 @@ where rcnv.repo_id not in (select f.repo_id from gh_file f inner join gh_vuln v 
 and rcv.repo_id in (select f.repo_id from gh_file f inner join gh_vuln v on f.file_id = v.vuln_id where v.vuln_desc in (%s)) \
 " % '\'' + '\', \''.join(vuln_list) + '\'', '\'' + '\', \''.join(vuln_list) + '\'' 
 
+def get_user_crepo_histogram():
+# get number of users who have each number of different repos they contribute to
+  db_conn = sd.get_connection("mysqlcreds-local-analysis.csv");
+  rows = sd.select_many_query(db_conn, \
+"select count(distinct username), repo_contribs from ( select username, count(distinct repo_id) repo_contribs from gh_repo_contributors group by username order by count(distinct repo_id) ) a group by repo_contribs");
+  users = []
+  repos_contributed_to = []
+  for i in range(0, len(rows)):
+    users.append(rows[i][0])
+    repos_contributed_to.append(rows[i][1])
+    print rows[i][0], rows[i][1]
+#  plt.plot(repos_contributed_to, users)
+  print "3-10", np.sum(users[2:10])
+  print "11-20", np.sum(users[10:20])
+  print "21-30", np.sum(users[20:-1])
+  print ">1", np.sum(users[1:-1])
+#  plt.show()
+  return[users, repos_contributed_to]
 
+def get_repo_cuser_histogram1():
+#contributors per repo
+  db_conn = sd.get_connection("mysqlcreds-local-analysis.csv");
+  rows = sd.select_many_query(db_conn, \
+  "select repo_id, count(distinct username) from gh_repo_contributors group by repo_id order by count(distinct username);")
+  contributors = []
+  for row in rows:
+    contributors.append(row[1])
 
+  n, bins, patches = plt.hist(contributors, 50)
+  l = plt.plot(bins)
+  plt.show()
+  plt.clf()
+
+def get_repo_cuser_histogram2():
+  db_conn = sd.get_connection("mysqlcreds-local-analysis.csv");
+# get number of repos with each number of different contributors
+  rows = sd.select_many_query(db_conn, \
+"select count(distinct repo_id), num_contribs from ( select repo_id, count(distinct username) num_contribs from gh_repo_contributors group by repo_id order by count(distinct username) ) a group by num_contribs")
+  repos = []
+  contributing_users = []
+  for i in range(0, len(rows)):
+    repos.append(rows[i][0])
+    contributing_users.append(rows[i][1])
+    print rows[i][0], rows[i][1]
+  print "3-10", np.sum(repos[2:10])
+  print "11-20", np.sum(repos[10:20])
+  print "21-30", np.sum(repos[20:31])
+  print ">1", np.sum(repos[1:-1])
+#  plt.plot(repos_contributed_to, users)
+#  plt.show()
+  return[repos, contributing_users]
 
 
 def a(db_conn, vuln_list):
@@ -199,6 +280,7 @@ def b(db_conn, vuln_list):
   a(db_conn, vuln_list);
   plt.title(", ".join(vuln_list));
   plt.show()
+  plt.clf()
 
 def divide_non_zero(pair):
   if (pair[1] == 0 or pair[1] == None): 
@@ -212,6 +294,7 @@ def c(db_conn, vuln_list1, vuln_list2):
   plt.legend(handles=tmp + tmp2)
   plt.title(", ".join(vuln_list1) + ", " + ", ".join(vuln_list2));
   plt.show()
+  plt.clf()
 
   vu = map( lambda pair: divide_non_zero(pair) , zip(avg_vulns_under, avg_vulns_under2))
   vm = map( lambda pair: divide_non_zero(pair) , zip(avg_vulns_mid, avg_vulns_mid2))
@@ -225,6 +308,7 @@ def c(db_conn, vuln_list1, vuln_list2):
   p3, = plt.plot(vo, label="over")
   plt.legend(handles=[p1,p2,p3])
   plt.show()
+  plt.clf()
 
 def a1(db_conn, vuln_list):
 
@@ -267,6 +351,7 @@ def b1(db_conn, vuln_list):
   a1(db_conn, vuln_list);
   plt.title(", ".join(vuln_list));
   plt.show()
+  plt.clf()
 
 def divide_non_zero(pair):
   if (pair[1] == 0 or pair[1] == None): 
@@ -308,7 +393,8 @@ def execute_query_over_range(db_conn, query, args):
     avg.append(np.average(vulncount))
     stddev.append(np.std(vulncount))
     x_axis.append(i)
-  print avg
-  print stddev
-  print x_axis
+  #n, bins, patches = plt.hist(vulncount, 50)
+  #l = plt.plot(bins)
+  #plt.show()
+  #plt.clf()
   return [avg, stddev, x_axis]

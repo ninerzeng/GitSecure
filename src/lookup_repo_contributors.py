@@ -4,16 +4,17 @@ import json
 import util
 import sys
 
-in_order = True;
+in_order = False;
 
-db_conn = sd.get_connection(credentials_file='mysqlcreds-remote.csv')
+#db_conn = sd.get_connection(credentials_file='mysqlcreds-remote.csv')
+db_conn = sd.get_connection(credentials_file='mysqlcreds-analysis.csv')
 rows = None;
 if (in_order):
 	rows = sd.select_many_query(db_conn, "select repo_id, contributors_url, owner_name from gh_repo where repo_id >= (select coalesce(max(repo_id), 0) from gh_repo_contributors) order by repo_id")
 else: #get the stragglers
 	rows = sd.select_many_query(db_conn, "select repo_id, contributors_url, owner_name from gh_repo where repo_id not in (select repo_id from gh_repo_contributors) order by repo_id")
 
-header = {'Authorization': 'token ' + '7ad044b7c036e7eca299cdea799a7b5bae093e26'}
+header = {'Authorization': 'token ' + '3c763f8f4d84e5a1329b19ad3238f06f038749de'}
 
 for row in rows:
 	repo_id = row[0];
@@ -37,6 +38,6 @@ for row in rows:
 		if ratelimit_remaining == 0: 
 			print "napping for ", reset_time
 			util.nap(reset_time)
-	except ValueError, ConnectionError:
+	except:# ValueError, requests.exceptions.ConnectionError:
 		print "error: ", sys.exc_info()[0]
 		print "skipping repo: ", repo_id

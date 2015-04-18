@@ -11,6 +11,7 @@ create table gh_repo (
 	repo_size int,
 	last_pushed datetime,
 	contributors_url varchar(256),
+	description varchar(512),
 	repo_id int not null auto_increment, 
 	primary key (repo_id),
 	foreign key (owner_name) references gh_user(username),
@@ -45,7 +46,8 @@ create table gh_vuln (
 	date_written datetime, -- may not be able to get this field
 	author_name varchar(256), -- may not be able to get this field either
 	primary key (vuln_id),
-	foreign key (file_id) references gh_file(file_id)
+	foreign key (file_id) references gh_file(file_id),
+	unique key (file_id, line_number)
 );
 
 create index vuln_descript on gh_vuln (vuln_desc);

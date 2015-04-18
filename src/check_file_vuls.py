@@ -1,5 +1,41 @@
 import os
-import parse_file as p
+import subprocess
+
+def grep_for_regexes(root_dir, regexes, file_suffix="*.php"):
+  comments = ['/^\\#/d', '/\\/\\*/,/*\\//d; /^\\/\\//d; /^$/d;']
+  cmd_base = "find " + root_dir + " -name '" + file_suffix + "' -type f -print0 | xargs -0 sed -i "
+
+  for comment in comments:
+    cmd = cmd_base + "'" + comment + "'"
+#    print cmd
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+    temp = process.communicate()
+
+  result = [];
+  regex = "|".join(regexes)
+#  for regex in regexes:
+  cmd = "grep -E \"" + regex + "\" " + root_dir + " --include " + file_suffix +"  -n --no-messages --with-filename -r"
+#  print cmd
+  process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+  temp = process.communicate()
+#  print temp
+  if temp:
+    return parse_grep_output(temp[0], root_dir)
+  
+def parse_grep_output(grep_out, root_dir):
+  result = {};
+  for line in grep_out.splitlines():
+    ar = line.split(":")
+    filename = ar[0]
+    filename = filename.replace(root_dir, "") # remove data root directory from filename
+    line_num = ar[1]
+#    print ar[2]
+#    print ar[2:]
+    code = "".join(ar[2:])
+    if filename not in result:
+      result[filename] = []
+    result[filename].append({"line":line_num, "code_sample": code})
+  return result
 
 def scan_files_for_vul(root, file_dirs, vuls):
 	results = []

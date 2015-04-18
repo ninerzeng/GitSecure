@@ -8,7 +8,7 @@ import math
 #today = date.today()
 #print today
 
-language = 'C'
+language = 'PHP'
 size_limit = '1000'
 per_page = 100
 compress_format = 'tarball'
@@ -68,12 +68,14 @@ def collect_urls_by_page_num(token, page_num, starting_date=None, ending_date=No
 			pushed_at = item['pushed_at']
 			size = item['size']
 			contributors_url = item['contributors_url']
+			description = item['description']
 			meta_list.append({
 					'url': url,
 					'created_at': created_at,
 					'pushed_at': pushed_at,
 					'size': size,
-					'contributors_url': contributors_url
+					'contributors_url': contributors_url,
+					'description': description
 					})
 	else:
 		print 'Request for Page Num: ' + str(page_num) + ' ERROR'
