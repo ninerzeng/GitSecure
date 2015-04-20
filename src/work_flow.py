@@ -7,6 +7,7 @@ import collect_repos
 import check_file_vuls
 import analyze_json
 from datetime import date, timedelta
+import datetime
 import math
 import time
 import import_json_to_db
@@ -21,7 +22,7 @@ regexes = ["curl_init", "CURLOPT_SSL_VERIFYPEER", "CURLOPT_SSL_VERIFYHOST"]
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2009,1,1)
-starting_date = date(2011,5,30)
+starting_date = date(2012,4,13)
 #starting_date = date(2008,3,1)
 ending_date = date.today()
 #ending_date = date(2008,3,5)
@@ -60,6 +61,7 @@ if __name__ == '__main__':
 	print 'Starting date is ', starting_date, ' and ending date is ', ending_date
 
 	while (not pe or pe < ending_date):		
+		print "starting round at: ", datetime.datetime.now()
 		if not cs:
 			meta_list_with_count = collect_repos.collect_repo_urls(token, ce)	
 		else:
