@@ -75,7 +75,10 @@ def collect_urls_by_page_num(token, page_num, starting_date=None, ending_date=No
 					'pushed_at': pushed_at,
 					'size': size,
 					'contributors_url': contributors_url,
-					'description': description
+					'description': description,
+					'forks_url': item['forks_url'],
+					'stargazers': item['stargazers_count'],
+					'forks': item['forks_count']
 					})
 	else:
 		print 'Request for Page Num: ' + str(page_num) + ' ERROR'

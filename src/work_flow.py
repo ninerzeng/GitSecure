@@ -124,8 +124,12 @@ if __name__ == '__main__':
 									'created_at': created_at,
 									'pushed_at': pushed_at,
 									'size': size,
+									'url': url,
 									'contributors_url': contributors_url,
-									'description': description
+									'description': description,
+                  'forks_url': meta_info['forks_url'],
+                  'stargazers': meta_info['stargazers'],
+                  'forks': meta_info['forks']
 									}}
 			elif not reponame in result_dict[username]:
 				#result_dict[items[-3]].append({items[-2]:[]})	
@@ -134,8 +138,12 @@ if __name__ == '__main__':
 									'created_at': created_at,
 									'pushed_at': pushed_at,
 									'size': size,
+									'url': url,
 									'contributors_url': contributors_url,
-									'description': description
+									'description': description,
+                  'forks_url': meta_info['forks_url'],
+                  'stargazers': meta_info['stargazers'],
+                  'forks': meta_info['forks']
 								 	}
 			
 		#print result_dict	
