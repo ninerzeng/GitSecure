@@ -20,8 +20,9 @@ def save_user_data(con, username, email=''):
     # if we encounter a user a second time, use insert ignore syntax to avoid inserting them a second time
     return execute_query(con, "insert ignore into gh_user (username, email) values (%s, %s)", (username, email));
     
-def save_repo_data(con, repo_name, date_created, owner_name, repo_size, last_pushed, contributors_url="", description=""):
-    repo_id = execute_query(con, "insert ignore into gh_repo (repo_name, date_created, owner_name, repo_size, last_pushed, contributors_url, description) values (%s, %s, %s, %s, %s, %s, %s)", (repo_name, date_created, owner_name, repo_size, last_pushed, contributors_url, description));
+def save_repo_data(con, repo_name, date_created, owner_name, repo_size, last_pushed, url, forks_url, contributors_url, description, stargazers, forks):
+    repo_id = execute_query(con, "insert ignore into gh_repo (repo_name, date_created, owner_name, repo_size, last_pushed, url, forks_url, contributors_url, description, stargazers, forks) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", \
+    (repo_name, date_created, owner_name, repo_size, last_pushed, url, forks_url, contributors_url, description, stargazers, forks));
     if (repo_id == -1):
       repo_id = select_id_query(con, "select repo_id from gh_repo where repo_name = %s and owner_name = %s", (repo_name, owner_name));
     return repo_id

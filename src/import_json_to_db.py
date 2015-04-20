@@ -18,7 +18,7 @@ def import_to_database (json_dict, credentials_file):
 			last_pushed = repo_dict["pushed_at"]
 			contributors_url = repo_dict["contributors_url"]
 			description = repo_dict["description"]
-			repo_id = sd.save_repo_data(db_conn, reponame, date_created, username, repo_size, last_pushed, contributors_url, description);
+			repo_id = sd.save_repo_data(db_conn, reponame, date_created, username, repo_size, last_pushed, repo_dict["url"], repo_dict["forks_url"], contributors_url, description, repo_dict["stargazers"], repo_dict["forks"]);
 
 			file_list = repo_dict["files"];
 			for file_entry in file_list:
