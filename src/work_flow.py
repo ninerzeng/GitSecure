@@ -11,22 +11,22 @@ import math
 import time
 import import_json_to_db
 
-#TODO: changed datadir to have extra /, not sure if that will break anything
-data_dir = '../data/'
+data_dir = '../data'
 result_dir = '../result'
 result_file = 'result.json'
 token = os.environ.get('P_TOKEN', None)
-credentials_file='mysqlcreds-local.csv'
+credentials_file='mysqlcreds-remote.csv'
 
 regexes = ["curl_init", "CURLOPT_SSL_VERIFYPEER", "CURLOPT_SSL_VERIFYHOST"]
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2009,1,1)
-starting_date = date(2008,8,1)
+starting_date = date(2011,5,30)
+#starting_date = date(2008,3,1)
 ending_date = date.today()
 #ending_date = date(2008,3,5)
-initial_delta = timedelta(days=30)
-#initial_delta = timedelta(days=5)
+#initial_delta = timedelta(days=30)
+initial_delta = timedelta(days=5)
 
 #Stats
 total_num_of_repo_queried = 0
@@ -52,11 +52,11 @@ if __name__ == '__main__':
 	ps = None
 	pe = None
 	#Use this set to download prior as well
-	cs = None
-	ce = starting_date
+#	cs = None
+#	ce = starting_date
 	#User this set to download inclusive
-	#cs = starting_date
-	#ce = cs + initial_delta
+	cs = starting_date
+	ce = cs + initial_delta
 	print 'Starting date is ', starting_date, ' and ending date is ', ending_date
 
 	while (not pe or pe < ending_date):		
@@ -159,7 +159,7 @@ if __name__ == '__main__':
 		
 		#Uncomment the following line to unleash the beast
 		start_time = time.time()	
-#		reponame_to_username = download_repo.download_urls(url_list, token)
+		reponame_to_username = download_repo.download_urls(url_list, token)
 		end_time = time.time()	
 		elapsed_time = end_time - start_time
 		total_seconds_of_download += elapsed_time
@@ -171,8 +171,8 @@ if __name__ == '__main__':
 #		with open(dict_dir, 'w') as dwrite:
 #			json.dump(reponame_to_username, dwrite)
 		############################################################################
-		with open(dict_dir) as d_file:
-			reponame_to_username = json.load(d_file)
+#		with open(dict_dir) as d_file:
+#			reponame_to_username = json.load(d_file)
 		
 		untar.untar_dir(data_dir)
 		util.delete_tarballs(data_dir)
@@ -183,14 +183,14 @@ if __name__ == '__main__':
 		#Check for files using the vulnerabilities list set up top 
 		start_time = time.time()	
 #		results = check_file_vuls.scan_files_for_vul(data_dir, all_c_files, vulnerabilities + good_practices)
-		results = check_file_vuls.grep_for_regexes(data_dir, regexes, file_suffix="*.php")
+		results = check_file_vuls.grep_for_regexes(data_dir + "/", regexes, file_suffix="*.php")
 		end_time = time.time()	
 		elapsed_time = end_time - start_time
 		total_seconds_of_analyzing += elapsed_time
 		#print results
 		print 'Time spent for analyzing: ', elapsed_time
 		#Update the initial result data with vulnerabilities of spefic files in each repo
-#		util.delete_in_directory(data_dir)
+		util.delete_in_directory(data_dir)
 		#for entry in results:
 		for key, val in results.iteritems():
 			#print key
@@ -213,11 +213,8 @@ if __name__ == '__main__':
 		result_with_date = {'start' : str(cs), 'end': str(ce)}#, 'result': result_dict}
 		with open(result_file_dir,'w') as outfile:	
 			json.dump(result_with_date, outfile, ensure_ascii=False) 
-		break
 		#saving the result
-		'''
 		# analyze_json.collect_num_files_using_func(result_dict, 'gets')
-		total_list = vulnerabilities + good_practices
 		#num_list = analyze_json.collect_num_files_using_func_list(result_dict, total_list)
 		#print total_list
 		#print num_list
@@ -228,7 +225,6 @@ if __name__ == '__main__':
 		initial_delta = max(initial_delta, timedelta(1))
 		ce += initial_delta		
 		print 'Previous start: ', ps,' Previous end: ',pe, ' Current start: ',cs, ' Current end: ',ce
-'''
 	print 'total number of repo queried ', total_num_of_repo_queried 
 	print 'total number of repo downloaded ', total_num_of_repo_downloaded 
 	print 'total time spent for downloading ', total_seconds_of_download 

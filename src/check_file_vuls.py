@@ -26,15 +26,18 @@ def parse_grep_output(grep_out, root_dir):
   result = {};
   for line in grep_out.splitlines():
     ar = line.split(":")
-    filename = ar[0]
-    filename = filename.replace(root_dir, "") # remove data root directory from filename
-    line_num = ar[1]
-#    print ar[2]
-#    print ar[2:]
-    code = "".join(ar[2:])
-    if filename not in result:
-      result[filename] = []
-    result[filename].append({"line":line_num, "code_sample": code})
+    if len(ar) >= 3:
+      filename = ar[0]
+      filename = filename.replace(root_dir, "") # remove data root directory from filename
+      line_num = ar[1]
+  #    print ar[2]
+  #    print ar[2:]
+      code = "".join(ar[2:])
+      if filename not in result:
+        result[filename] = []
+      result[filename].append({"line":line_num, "code_sample": code})
+    else:
+      print "Warning: grep output line: " + line + " does not match expected form"
   return result
 
 def scan_files_for_vul(root, file_dirs, vuls):
