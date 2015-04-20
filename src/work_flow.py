@@ -22,7 +22,7 @@ regexes = ["curl_init", "CURLOPT_SSL_VERIFYPEER", "CURLOPT_SSL_VERIFYHOST"]
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2009,1,1)
-starting_date = date(2012,4,13)
+starting_date = date(2014,6,22)
 #starting_date = date(2008,3,1)
 ending_date = date.today()
 #ending_date = date(2008,3,5)
