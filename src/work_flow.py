@@ -11,6 +11,7 @@ import datetime
 import math
 import time
 import import_json_to_db
+import save_data
 
 data_dir = '../data'
 result_dir = '../result'
@@ -24,8 +25,8 @@ regexes = ["curl_init", "CURLOPT_SSL_VERIFYPEER", "CURLOPT_SSL_VERIFYHOST"]
 #starting_date = date(2009,1,1)
 starting_date = date(2009,1,1)
 #starting_date = date(2008,3,1)
-ending_date = date.today()
-#ending_date = date(2008,3,5)
+#ending_date = date.today()
+ending_date = date(2014,6,22)
 #initial_delta = timedelta(days=30)
 initial_delta = timedelta(days=2)
 
@@ -115,8 +116,11 @@ if __name__ == '__main__':
 			forks_url = meta_info['forks_url']
 			stargazers = int(meta_info['stargazers'])
 			forks = int(meta_info['forks'])
-			url_list.append([username,reponame,actual_url, forks_url, stargazers, forks])
-		print url_list
+			url_list.append([reponame,username,actual_url, forks_url, stargazers, forks])
+		#print url_list
+		con = save_data.get_connection(credentials_file)
+		for info in url_list:
+			save_data.update_forks_watchers(con, info[0], info[1], info[2], info[3], info[4], info[5]) 
 		'''
 		for meta_info in meta_list:
 			url = meta_info['url']
@@ -225,10 +229,11 @@ if __name__ == '__main__':
 		#print result_dict
 		import_json_to_db.import_to_database(result_dict, credentials_file)
 		#TODO delete all files after security analysis
+		'''
 		result_with_date = {'start' : str(cs), 'end': str(ce)}#, 'result': result_dict}
 		with open(result_file_dir,'w') as outfile:	
 			json.dump(result_with_date, outfile, ensure_ascii=False) 
-		'''
+		
 		#saving the result
 		# analyze_json.collect_num_files_using_func(result_dict, 'gets')
 		#num_list = analyze_json.collect_num_files_using_func_list(result_dict, total_list)
