@@ -45,7 +45,7 @@ def save_vulnerability_data(con, file_id, line_number, code_sample, date_written
     return vuln_id
 
 def update_forks_watchers(con, repo_name, username, url, forks_url, stargazers, forks):
-    execute_query(con, "update ignore gh_repo set url = %s, forks_url = %s, stargazers = %s, forks = %s where repo_name = %s and username = %s and url is null and forks_url is null and stargazers is null and forks is null", (url, forks_url, stargazers, forks, repo_name, username));
+    execute_query(con, "update ignore gh_repo set url = %s, forks_url = %s, stargazers = %s, forks = %s where repo_name = %s and owner_name = %s and url is null and forks_url is null and stargazers is null and forks is null", (url, forks_url, stargazers, forks, repo_name, username));
 
 def execute_query(con, query, data):  
     if not con:
