@@ -22,12 +22,12 @@ regexes = ["curl_init", "CURLOPT_SSL_VERIFYPEER", "CURLOPT_SSL_VERIFYHOST"]
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2009,1,1)
-starting_date = date(2014,6,22)
+starting_date = date(2014,12,24)
 #starting_date = date(2008,3,1)
 ending_date = date.today()
 #ending_date = date(2008,3,5)
 #initial_delta = timedelta(days=30)
-initial_delta = timedelta(days=5)
+initial_delta = timedelta(days=2)
 
 #Stats
 total_num_of_repo_queried = 0
