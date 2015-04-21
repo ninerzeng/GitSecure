@@ -27,7 +27,7 @@ starting_date = date(2009,1,1)
 ending_date = date.today()
 #ending_date = date(2008,3,5)
 #initial_delta = timedelta(days=30)
-initial_delta = timedelta(days=5)
+initial_delta = timedelta(days=2)
 
 #Stats
 total_num_of_repo_queried = 0
