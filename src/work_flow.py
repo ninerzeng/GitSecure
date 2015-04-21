@@ -22,7 +22,7 @@ regexes = ["curl_init", "CURLOPT_SSL_VERIFYPEER", "CURLOPT_SSL_VERIFYHOST"]
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2009,1,1)
-starting_date = date(2014,12,24)
+starting_date = date(2009,1,1)
 #starting_date = date(2008,3,1)
 ending_date = date.today()
 #ending_date = date(2008,3,5)
@@ -53,11 +53,11 @@ if __name__ == '__main__':
 	ps = None
 	pe = None
 	#Use this set to download prior as well
-#	cs = None
-#	ce = starting_date
+	cs = None
+	ce = starting_date
 	#User this set to download inclusive
-	cs = starting_date
-	ce = cs + initial_delta
+	#cs = starting_date
+	#ce = cs + initial_delta
 	print 'Starting date is ', starting_date, ' and ending date is ', ending_date
 
 	while (not pe or pe < ending_date):		
@@ -108,6 +108,18 @@ if __name__ == '__main__':
 		url_list = []
 		for meta_info in meta_list:
 			url = meta_info['url']
+			items = url.split('/')
+			username = items[-3]	
+			reponame = items[-2]
+			actual_url = meta_info['actual_url']
+			forks_url = meta_info['forks_url']
+			stargazers = int(meta_info['stargazers'])
+			forks = int(meta_info['forks'])
+			url_list.append([username,reponame,actual_url, forks_url, stargazers, forks])
+		print url_list
+		'''
+		for meta_info in meta_list:
+			url = meta_info['url']
 			created_at = meta_info['created_at']
 			pushed_at = meta_info['pushed_at']
 			size = meta_info['size']
@@ -147,7 +159,7 @@ if __name__ == '__main__':
 								 	}
 			
 		#print result_dict	
-
+		'''
 		current_num_download = len(url_list)	
 		total_num_of_repo_downloaded += current_num_download
 		print 'Downloading ' + str(current_num_download) + ' tar files'
@@ -160,13 +172,14 @@ if __name__ == '__main__':
 		#download_repo.download_urls(url_list, token)
 		
 		#Uncomment the following line to unleash the beast
+		'''
 		start_time = time.time()	
 		reponame_to_username = download_repo.download_urls(url_list, token)
 		end_time = time.time()	
 		elapsed_time = end_time - start_time
 		total_seconds_of_download += elapsed_time
 		print 'Time spent for downloading: ', elapsed_time
-
+		'''
 		dict_dir = result_dir + '/' + 'repo_dict.out'
 		############################################################################
 		#save repo to user name for testing purpose	
@@ -181,7 +194,7 @@ if __name__ == '__main__':
 #		all_c_files = util.find_extensions('.c', data_dir)
 #		print 'Total number of C files: ' + str(len(all_c_files))
 		
-		
+		'''
 		#Check for files using the vulnerabilities list set up top 
 		start_time = time.time()	
 #		results = check_file_vuls.scan_files_for_vul(data_dir, all_c_files, vulnerabilities + good_practices)
@@ -215,6 +228,7 @@ if __name__ == '__main__':
 		result_with_date = {'start' : str(cs), 'end': str(ce)}#, 'result': result_dict}
 		with open(result_file_dir,'w') as outfile:	
 			json.dump(result_with_date, outfile, ensure_ascii=False) 
+		'''
 		#saving the result
 		# analyze_json.collect_num_files_using_func(result_dict, 'gets')
 		#num_list = analyze_json.collect_num_files_using_func_list(result_dict, total_list)
