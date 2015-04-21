@@ -17,13 +17,14 @@ data_dir = '../data'
 result_dir = '../result'
 result_file = 'result.json'
 token = os.environ.get('P_TOKEN', None)
-credentials_file='mysqlcreds-remote.csv'
+#credentials_file='mysqlcreds-remote.csv'
+credentials_file='mysqlcreds-local.csv'
 
 regexes = ["curl_init", "CURLOPT_SSL_VERIFYPEER", "CURLOPT_SSL_VERIFYHOST"]
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2009,1,1)
-starting_date = date(2009,1,1)
+starting_date = date(2008,1,1)
 #starting_date = date(2008,3,1)
 #ending_date = date.today()
 ending_date = date(2014,6,22)
@@ -121,6 +122,7 @@ if __name__ == '__main__':
 		con = save_data.get_connection(credentials_file)
 		for info in url_list:
 			save_data.update_forks_watchers(con, info[0], info[1], info[2], info[3], info[4], info[5]) 
+			print info
 		'''
 		for meta_info in meta_list:
 			url = meta_info['url']
@@ -193,8 +195,10 @@ if __name__ == '__main__':
 #		with open(dict_dir) as d_file:
 #			reponame_to_username = json.load(d_file)
 		
+		'''
 		untar.untar_dir(data_dir)
 		util.delete_tarballs(data_dir)
+		'''
 #		all_c_files = util.find_extensions('.c', data_dir)
 #		print 'Total number of C files: ' + str(len(all_c_files))
 		
