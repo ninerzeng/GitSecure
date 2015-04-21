@@ -5,6 +5,7 @@ from datetime import date, datetime, timedelta
 from time import gmtime, time
 import download_repo
 import math
+import util
 #today = date.today()
 #print today
 
@@ -53,6 +54,10 @@ def collect_urls_by_page_num(token, page_num, starting_date=None, ending_date=No
 		#print 'Remaining request: ' + r.headers['x-ratelimit-remaining'] 
 		#print ' date: ' + r.headers['date'] + ' reset: ' + datetime.utcfromtimestamp(int(r.headers['x-ratelimit-reset'])).isoformat() 
 		#print str(r.headers['x-ratelimit-reset']) + ' ' + str(time())
+		rate_remaining = r.headers['x-ratelimit-remaining']
+		reset_time = int(r.headers['x-ratelimit-reset'])
+		if rate_remaining == 0:
+			 util.nap(reset_time)
 		repoItem = json.loads(r.text or r.content)
 		total_count = repoItem['total_count']
 		repoList = repoItem['items']
@@ -78,7 +83,8 @@ def collect_urls_by_page_num(token, page_num, starting_date=None, ending_date=No
 					'description': description,
 					'forks_url': item['forks_url'],
 					'stargazers': item['stargazers_count'],
-					'forks': item['forks_count']
+					'forks': item['forks_count'],
+					'actual_url': item['html_url']
 					})
 	else:
 		print 'Request for Page Num: ' + str(page_num) + ' ERROR'
