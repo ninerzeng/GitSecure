@@ -3,7 +3,7 @@ from os import listdir
 from os.path import isfile, join
  
 # untars single file and drops it in destpath
-def untar(fname,destpath='../data'):
+def untar(fname,destpath=data_dir):
     if (fname.endswith("tar.gz")):
  	#print 'untaring ', fname
         tar = tarfile.open(fname)
