@@ -1,0 +1,48 @@
+test_sql = """$conn = new mysql_connect("servername", $usesssssrname,"YESjjjjjjjjjjj")"""
+mysqli_connect($asdf, $asdf, "YES");
+
+mysqli_connect($NO, "asdf");
+
+mysqli_dontonnect(fuck, you,"NO");
+
+	mysql(  asdf,       YES   , "password"  )
+mysqli( $asdf   , $SFDFSDF  ,'yes'                  )
+
+
+
+#MSSQL
+
+mssql_connect($sever, 'test', 'PASSWORD')
+mssql_connect("sealLKJLKJver", 'test', "PASss SWORD" , some other crap)
+mssql_connect("no", no)
+
+
+#PDO
+
+$dbh = new PDO('mysql:host=localhost;dbname=test', $user, $NO);
+$dbh = new PDO('mysql:host=localhost;dbname=test', $user, "PASSWORD"    );
+
+new PDO()
+new PDO(",,,,,")
+PDOSDF()
+PDO("","","","")
+PDO("",,"")
+PDO("",asdf,"YES")
+pdo("",		asdf	,	"YESS")
+
+
+
+
+#ODBC
+odbc_connect( $dsn , $user , "YES", $cursor_type )
+odbc_CONNECT( "asdfasdf" , "fdsa" ,"PASSWORD")
+
+
+#POSTGRES
+$dbconn3 = pg_connect("host=sheep port=5432 dbname=mary user=lamb password=foo");
+$dbconn3 = pg_connect("host=shsdlfkjsdfeep port=5432 dbname=mary userljlkj=lamb password=foo");
+
+#OCI
+
+oci_connect('hr', 'password', 'localhost/XE');
+asdf oci_connect("asdf" , "PASSWORD" , "alskdjfslkdfja;sdljfa;asdf;asd;fs;df;sdf;sdf");
