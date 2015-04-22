@@ -8,7 +8,7 @@ import shutil
 
 def nap(wakeup_time):
 	current_time = time()
-	nap_time = math.ceil(wakeup_time - current_time)
+	nap_time = math.ceil(wakeup_time - current_time) + 1
 	if  nap_time > 0:
 		print 'napping for ', nap_time, ' seconds'
 		sleeptime.sleep(nap_time)
