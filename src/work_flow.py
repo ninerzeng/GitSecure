@@ -24,10 +24,11 @@ good_practices = ['strncpy', 'strncat', 'snprintf', 'vsnprintf', 'fgets', 'getpw
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2009,1,1)
-starting_date = date(2009,1,1)
-ending_date = date.today()
+starting_date = date(2014,1,1)
+ending_date = date(2014,1,2)
+#ending_date = date.today()
 #ending_date = date(2008,3,5)
-initial_delta = timedelta(days=30)
+initial_delta = timedelta(days=1 )
 #initial_delta = timedelta(days=5)
 
 #Stats

@@ -6,14 +6,20 @@ from os.path import isfile, join
 def untar(fname,destpath='../data'):
     if (fname.endswith("tar.gz")):
  	#print 'untaring ', fname
-        tar = tarfile.open(fname)
-        if destpath is not None:
-	        #print "Extracted in " + destpath
-	        tar.extractall(destpath+'/'+fname[:-7])
-        else: 
-        	tar.extractall();
-	        #print "Extracted in Data Directory"
-        tar.close()
+	try:
+		tar = tarfile.open(fname)
+        	if destpath is not None:
+	        	#print "Extracted in " + destpath
+			try:
+	        		tar.extractall(destpath+'/'+fname[:-7])
+        		except:
+				pass
+		else: 
+        		tar.extractall();
+		        #print "Extracted in Data Directory"
+	        tar.close()
+	except:
+		pass
     else:
         print "Not a tar.gz file: '%s '" % fname
 

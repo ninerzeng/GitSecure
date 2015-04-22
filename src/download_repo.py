@@ -80,10 +80,13 @@ def download_url(url, file_num='', token=None):
 def download_urls(url_list, token=None):
 	repo_to_user = {}
 	file_num = 1	
-	for url in url_list:
+	#for url in url_list:
+	for i in xrange(0,25):
+
 		#print 'File ' + str(file_num)
-		download_url(url, file_num, token)
-		repo_to_user[url.split('/')[-2] + '_' + str(file_num)] = url.split('/')[-3]
+		#download_url(url, file_num, token)
+		download_url(url_list[i], file_num, token)
+		repo_to_user[url_list[i].split('/')[-2] + '_' + str(file_num)] = url_list[i].split('/')[-3]
 		file_num += 1
 	return repo_to_user
 	
