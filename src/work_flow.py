@@ -10,7 +10,7 @@ from datetime import date, timedelta
 import math
 import time
 import import_json_to_db
-
+import static_analysis_module as SA
 data_dir = '../data'
 result_dir = '../result'
 result_file = 'result.json'
@@ -170,7 +170,9 @@ if __name__ == '__main__':
 		util.delete_tarballs(data_dir)
 		all_c_files = util.find_extensions('.c', data_dir)
 		print 'Total number of C files: ' + str(len(all_c_files))
-		
+
+		result_dict_for_RE = result_dict
+		SA.parse(result_dir + "/results_rats.json", reponame_to_username, result_dict)
 		
 		#Check for files using the vulnerabilities list set up top 
 		start_time = time.time()	
@@ -180,8 +182,9 @@ if __name__ == '__main__':
 		total_seconds_of_analyzing += elapsed_time
 		#print results
 		print 'Time spent for analyzing: ', elapsed_time
-		#Update the initial result data with vulnerabilities of spefic files in each repo
-		util.delete_in_directory(data_dir)
+
+
+		#Update the initial result data with vulnerabilities of spefic files in each repo q
 		for entry in results:
 			for key, val in entry.iteritems():
 				#print key
@@ -197,10 +200,15 @@ if __name__ == '__main__':
 				username = reponame_to_username[reponame]
 				#print result_dict[username]
 				result_dict[username][reponame_no_underscore]['files'].append({unique_path: val})
+		with open(result_dir + "/result_RE.json", 'w') as outfile:
+			json.dump(result_dict_for_RE, outfile, ensure_ascii=False)	
 		
+		# util.delete_in_directory(data_dir)
+
 		#print result_dict
 		#TODO delete all files after security analysis
-		import_json_to_db.import_to_database(result_dict, credentials_file)
+		### commenting this out for now
+		# import_json_to_db.import_to_database(result_dict, credentials_file)
 
 		#saving the result
 		result_with_date = {'start' : str(cs), 'end': str(ce), 'result': result_dict}
