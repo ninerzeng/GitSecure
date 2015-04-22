@@ -13,13 +13,15 @@ import time
 import import_json_to_db
 import save_data
 
-data_dir = '../data_db'
-result_dir = '../result_db'
+data_dir = '../data'
+result_dir = '../result'
 result_file = 'result.json'
 token = os.environ.get('P_TOKEN', None)
 credentials_file='mysqlcreds-db-passwords.csv'
 
-regexes = ["curl_init", "CURLOPT_SSL_VERIFYPEER", "CURLOPT_SSL_VERIFYHOST"]
+from db_password import *
+
+regexes = db_regexes
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2011,12,25)
@@ -107,22 +109,6 @@ if __name__ == '__main__':
 		result_dict = {}
 		#Create an initial dictionary to collect statistic such as user and repo names
 		url_list = []
-'''
-		for meta_info in meta_list:
-			url = meta_info['url']
-			items = url.split('/')
-			username = items[-3]	
-			reponame = items[-2]
-			actual_url = meta_info['actual_url']
-			forks_url = meta_info['forks_url']
-			stargazers = int(meta_info['stargazers'])
-			forks = int(meta_info['forks'])
-			url_list.append([reponame,username,actual_url, forks_url, stargazers, forks])
-		#print url_list
-		con = save_data.get_connection(credentials_file)
-		for info in url_list:
-			save_data.update_forks_watchers(con, info[0], info[1], info[2], info[3], info[4], info[5]) 
-'''		
 		for meta_info in meta_list:
 			url = meta_info['url']
 			created_at = meta_info['created_at']
