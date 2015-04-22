@@ -14,7 +14,6 @@ def download_url(url, file_num='', token=None):
 	args = cmd.split()
 	f = open(file_name,'w')
 	subp = Popen(args, stdout=f, stderr=PIPE)
-
 	curlstdout, curlstderr = subp.communicate()
 	f.close()
 	#print curlstderr
@@ -80,13 +79,10 @@ def download_url(url, file_num='', token=None):
 def download_urls(url_list, token=None):
 	repo_to_user = {}
 	file_num = 1	
-	#for url in url_list:
-	for i in xrange(0,25):
-
+	for url in url_list:
 		#print 'File ' + str(file_num)
-		#download_url(url, file_num, token)
-		download_url(url_list[i], file_num, token)
-		repo_to_user[url_list[i].split('/')[-2] + '_' + str(file_num)] = url_list[i].split('/')[-3]
+		download_url(url, file_num, token)
+		repo_to_user[url.split('/')[-2] + '_' + str(file_num)] = url.split('/')[-3]
 		file_num += 1
 	return repo_to_user
 	
@@ -94,5 +90,3 @@ def make_folder(folder_name):
 	print 'Creating folder ' + folder_name + '...'
 	call(["mkdir", folder_name])
 	
-#call(["ls", "-l"])
-#call(["curl", "-L", url])
