@@ -15,7 +15,7 @@ data_dir = '../data'
 result_dir = '../result'
 result_file = 'result.json'
 token = os.environ.get('Ninas_P_TOKEN', None)
-credentials_file='mysqlcreds-remote.csv'
+credentials_file='mysqlcreds-rats.csv'
 
 #List of vulnerable functions to check
 vulnerabilities = ['strcpy', 'strcat', 'sprintf', 'vsprintf', 'gets', 'getpw']
@@ -24,9 +24,9 @@ good_practices = ['strncpy', 'strncat', 'snprintf', 'vsnprintf', 'fgets', 'getpw
 
 #Get folders prior to Jan 1st, 2009
 #starting_date = date(2009,1,1)
-starting_date = date(2014,1,1)
-ending_date = date(2014,1,2)
-#ending_date = date.today()
+starting_date = date(2014,1,6)
+#ending_date = date(2014,1,2)
+ending_date = date.today()
 #ending_date = date(2008,3,5)
 initial_delta = timedelta(days=1 )
 #initial_delta = timedelta(days=5)
@@ -203,12 +203,12 @@ if __name__ == '__main__':
 		# with open(result_dir + "/result_RE.json", 'w') as outfile:
 			# json.dump(result_dict_for_RE, outfile, ensure_ascii=False)	
 		
-		# util.delete_in_directory(data_dir)
+		util.delete_in_directory(data_dir)
 
 		#print result_dict
 		#TODO delete all files after security analysis
 		### commenting this out for now
-		# import_json_to_db.import_to_database(result_dict, credentials_file)
+		import_json_to_db.import_to_database(result_dict, credentials_file)
 
 		#saving the result
 		result_with_date = {'start' : str(cs), 'end': str(ce), 'result': result_dict}
