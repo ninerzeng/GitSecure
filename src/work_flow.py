@@ -14,7 +14,7 @@ import static_analysis_module as SA
 data_dir = '../data'
 result_dir = '../result'
 result_file = 'result.json'
-token = os.environ.get('P_TOKEN', None)
+token = os.environ.get('Ninas_P_TOKEN', None)
 credentials_file='mysqlcreds-remote.csv'
 
 #List of vulnerable functions to check
@@ -171,12 +171,12 @@ if __name__ == '__main__':
 		all_c_files = util.find_extensions('.c', data_dir)
 		print 'Total number of C files: ' + str(len(all_c_files))
 
-		result_dict_for_RE = result_dict
+		# result_dict_for_RE = result_dict
+		start_time = time.time()	
 		SA.parse(result_dir + "/results_rats.json", reponame_to_username, result_dict)
 		
 		#Check for files using the vulnerabilities list set up top 
-		start_time = time.time()	
-		results = check_file_vuls.scan_files_for_vul(data_dir, all_c_files, vulnerabilities + good_practices)
+		# results = check_file_vuls.scan_files_for_vul(data_dir, all_c_files, vulnerabilities + good_practices)
 		end_time = time.time()	
 		elapsed_time = end_time - start_time
 		total_seconds_of_analyzing += elapsed_time
@@ -185,23 +185,23 @@ if __name__ == '__main__':
 
 
 		#Update the initial result data with vulnerabilities of spefic files in each repo q
-		for entry in results:
-			for key, val in entry.iteritems():
-				#print key
-				first_idx = key.find('/')
-				unique_path = key[first_idx+1:]
-				key = key.split('/')
-				reponame = key[0]
-				last_idx = reponame.rfind('_')
-				reponame_no_underscore = reponame[:last_idx]
-				filename = key[-1]
-				#print reponame_no_underscore + " " + filename
-				#print reponame_to_username[reponame]
-				username = reponame_to_username[reponame]
-				#print result_dict[username]
-				result_dict[username][reponame_no_underscore]['files'].append({unique_path: val})
-		with open(result_dir + "/result_RE.json", 'w') as outfile:
-			json.dump(result_dict_for_RE, outfile, ensure_ascii=False)	
+		# for entry in results:
+		# 	for key, val in entry.iteritems():
+		# 		#print key
+		# 		first_idx = key.find('/')
+		# 		unique_path = key[first_idx+1:]
+		# 		key = key.split('/')
+		# 		reponame = key[0]
+		# 		last_idx = reponame.rfind('_')
+		# 		reponame_no_underscore = reponame[:last_idx]
+		# 		filename = key[-1]
+		# 		#print reponame_no_underscore + " " + filename
+		# 		#print reponame_to_username[reponame]
+		# 		username = reponame_to_username[reponame]
+		# 		#print result_dict[username]
+		# 		result_dict[username][reponame_no_underscore]['files'].append({unique_path: val})
+		# with open(result_dir + "/result_RE.json", 'w') as outfile:
+			# json.dump(result_dict_for_RE, outfile, ensure_ascii=False)	
 		
 		# util.delete_in_directory(data_dir)
 

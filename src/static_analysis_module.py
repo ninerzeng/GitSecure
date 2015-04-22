@@ -13,7 +13,7 @@ import json
 #	}
 
 
-def parse(result_SA_file_dir, reponame_to_username, result_dict ):
+def parse(result_SA_file_dir, reponame_to_username, result_dict, dump = False ):
 	with open("../result/rats.xml", 'w') as outfile:
 		subprocess.check_call(["rats", "--xml", "../data" ], stdout=outfile)
 
@@ -104,19 +104,19 @@ def parse(result_SA_file_dir, reponame_to_username, result_dict ):
 			# we only want to add the file : [ vulnerability dict ] if 
 			# we havent already encountered this file
 
-			unique = 1
+			#unique = 1
 			# print vulnerability, val, line_number, reponame_no_underscore, unique_path
 
 			# if the file exists as a dictionary row then we append to that file
 			for dictionary_for_file in result_dict[username][reponame_no_underscore]['files']:
 				if unique_path in dictionary_for_file.keys():
 					# print "not unique"
-					unique = 0
+					#unique = 0
 					dictionary_for_file[unique_path].append( { vulnerability : line_number})
 					break
 			# if unique == 1:
 			# 	result_dict[username][reponame_no_underscore]['files'].append({unique_path: val})
-
-	with open(result_SA_file_dir,'w') as outfile:	
-		json.dump(result_dict, outfile, ensure_ascii=False) 
+	if(dump):
+		with open(result_SA_file_dir,'w') as outfile:	
+			json.dump(result_dict, outfile, ensure_ascii=False) 
 	return result_dict
