@@ -52,7 +52,7 @@ db_regexes = [mysqlx, mssqlx, PDOx, ODBCx, POSTGRESx, OCIx]
 
 '''
 def testregex(regex):
-	cmd = "grep -i -E \"" + regex + "\" db-test.txt"
+	cmd = "grep -i -E \"" + regex + "\" db_test.txt"
 	process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
 	temp = process.communicate()
 	
