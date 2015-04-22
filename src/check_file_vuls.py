@@ -14,7 +14,7 @@ def grep_for_regexes(root_dir, regexes, file_suffix="*.php"):
   result = [];
   regex = "|".join(regexes)
 #  for regex in regexes:
-  cmd = "grep -E \"" + regex + "\" " + root_dir + " --include " + file_suffix +"  -n --no-messages --with-filename -r"
+  cmd = "grep -i -E \"" + regex + "\" " + root_dir + " --include " + file_suffix +"  -n --no-messages --with-filename -r"
 #  print cmd
   process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
   temp = process.communicate()
