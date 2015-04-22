@@ -50,7 +50,7 @@ OCIx = r"""\boci_connect\(""" + ARGUMENT + STRING_PASSWORD + END_WITH_OPTIONALS
 
 
 
-
+'''
 def testregex(regex):
 	cmd = "grep -i -E \"" + regex + "\" db-test.txt"
 	process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -66,6 +66,6 @@ testregex(PDOx)
 testregex(ODBCx)
 testregex(POSTGRESx)
 testregex(OCIx)
-
+'''
 
 
