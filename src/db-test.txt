@@ -1,9 +1,9 @@
 test_sql = """$conn = new mysql_connect("servername", $usesssssrname,"YESjjjjjjjjjjj")"""
-mysqli_connect($asdf, $asdf, "YES");
+mysqli_connect($asdf, $asdf, "YES", "alsdkfjsldkfjsldkfjs;;;;;");
 
 mysqli_connect($NO, "asdf");
 
-mysqli_dontonnect(fuck, you,"NO");
+mysqli_dontonnect(nope, you,"NO");
 
 	mysql(  asdf,       YES   , "password"  )
 mysqli( $asdf   , $SFDFSDF  ,'yes'                  )

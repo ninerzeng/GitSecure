@@ -22,7 +22,7 @@ END_WITH_OPTIONALS = r"""[^\)]*\)"""
 #	changed to accept empty string "" passwords
 #	mysqlx = r"""\bmysql(i)?(_connect)?\([^,]{2,25}?,[^,]{2,25}?,\s*[\'\"][^\'\"]*[\'\"]\s*\)"""
 #	changed to greedy, think it's more efficient for going up to ) character
-mysqlx = r"""\bmysql(i)?(_connect)?\(""" + ARGUMENT + ARGUMENT + STRING_PASSWORD + END_FUNCTION
+mysqlx = r"""\bmysql(i)?(_connect)?\(""" + ARGUMENT + ARGUMENT + STRING_PASSWORD + END_WITH_OPTIONALS
 
 
 #	MSSQL
@@ -60,12 +60,12 @@ def testregex(regex):
 	print "\n"
 
 
-
 testregex(mysqlx)
 testregex(mssqlx)
 testregex(PDOx)
 testregex(ODBCx)
 testregex(POSTGRESx)
 testregex(OCIx)
+
 
 
