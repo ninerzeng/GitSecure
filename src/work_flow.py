@@ -13,6 +13,9 @@ import time
 import import_json_to_db
 import save_data
 
+from Queue import Queue
+from threading import Thread
+
 data_dir = '../data'
 result_dir = '../result'
 result_file = 'result.json'
@@ -37,6 +40,44 @@ total_num_of_repo_queried = 0
 total_num_of_repo_downloaded = 0
 total_seconds_of_download = 0
 total_seconds_of_analyzing = 0
+
+def computeRegex(q):
+	print 'computation step begin'
+	ret = q.get()
+	results = ret['results']
+	result_dict = ret['result_dict']
+	reponame_to_username = ret['reponame_to_username']
+	for key, val in results.iteritems(): #print key
+		first_idx = key.find('/')
+		unique_path = key[first_idx+1:]
+		key = key.split('/')
+		reponame = key[0]
+		last_idx = reponame.rfind('_')
+		reponame_no_underscore = reponame[:last_idx]
+		filename = key[-1]
+		#print reponame_no_underscore + " " + filename
+		#print reponame_to_username[reponame]
+		username = reponame_to_username[reponame]
+		#print result_dict[username]
+		result_dict[username][reponame_no_underscore]['files'].append({unique_path: val})
+	
+	#print result_dict
+	import_json_to_db.import_to_database(result_dict, credentials_file)
+	#TODO delete all files after security analysis
+	
+	result_with_date = {'start' : str(cs), 'end': str(ce)}#, 'result': result_dict}
+	with open(result_file_dir,'w') as outfile:	
+		json.dump(result_with_date, outfile, ensure_ascii=False) 
+	print 'computation step done'
+	q.task_done()
+	
+
+#thrading!
+download_queue = Queue()
+worker = Thread(target=computeRegex, args=(download_queue,))
+worker.setDaemon(True)
+worker.start()
+
 
 
 if __name__ == '__main__':
@@ -199,31 +240,11 @@ if __name__ == '__main__':
 		print 'Time spent for analyzing: ', elapsed_time
 		#Update the initial result data with vulnerabilities of spefic files in each repo
 		util.delete_in_directory(data_dir)
+		temp  = { 'results' : results, 'result_dict' : result_dict, 
+				'reponame_to_username' : reponame_to_username }
+		download_queue.put (temp)
 		#for entry in results:
-		for key, val in results.iteritems():
-			#print key
-			first_idx = key.find('/')
-			unique_path = key[first_idx+1:]
-			key = key.split('/')
-			reponame = key[0]
-			last_idx = reponame.rfind('_')
-			reponame_no_underscore = reponame[:last_idx]
-			filename = key[-1]
-			#print reponame_no_underscore + " " + filename
-			#print reponame_to_username[reponame]
-			username = reponame_to_username[reponame]
-			#print result_dict[username]
-			result_dict[username][reponame_no_underscore]['files'].append({unique_path: val})
-		
-		#print result_dict
-		import_json_to_db.import_to_database(result_dict, credentials_file)
-		#TODO delete all files after security analysis
-		
-		result_with_date = {'start' : str(cs), 'end': str(ce)}#, 'result': result_dict}
-		with open(result_file_dir,'w') as outfile:	
-			json.dump(result_with_date, outfile, ensure_ascii=False) 
-		
-		#saving the result
+				#saving the result
 		# analyze_json.collect_num_files_using_func(result_dict, 'gets')
 		#num_list = analyze_json.collect_num_files_using_func_list(result_dict, total_list)
 		#print total_list
@@ -239,6 +260,9 @@ if __name__ == '__main__':
 	print 'total number of repo downloaded ', total_num_of_repo_downloaded 
 	print 'total time spent for downloading ', total_seconds_of_download 
 	print 'total time spent for querying ', total_seconds_of_analyzing 
+	# wait for all to finish
+	download_queue.join()
 	#sleep_time = 18
 		#print 'Sleeping for ' + str(sleep_time) +'s ...'
 		#time.sleep(sleep_time)
+
